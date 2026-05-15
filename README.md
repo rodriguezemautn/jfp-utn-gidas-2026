@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+# DevOps Sostenible — Presentación UTN FRLP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Presentación interactiva sobre **DevOps Sostenible** desarrollada con React + TypeScript + Vite + Tailwind CSS v4. Diseñada para ser proyectada en auditorios (100+ personas) con tipografía grande, animaciones suaves y soporte para presentador USB.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript
+- Vite 8
+- Tailwind CSS v4
+- Nginx (producción en Docker)
 
-## React Compiler
+## Slides
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| # | Slide | Estado |
+|---|-------|--------|
+| 00 | Intro — `$ whoami` | PIPELINE: INITIALIZING |
+| 01 | Imperativo 2026 | PIPELINE: IMPERATIVO_2026 |
+| 02 | Video Hook | PIPELINE: HOOK_VIDEO_LOAD |
+| 03 | GreenOps | PIPELINE: GREENOPS_BUILD |
+| 04 | Low Impact Architecture | PIPELINE: ARCH_DEPLOY |
+| 05 | Local AI Stack | PIPELINE: AI_STACK_LOAD |
+| 06 | SRE | PIPELINE: SRE_V2_CHECK |
+| 07 | Síntesis | PIPELINE: SINTESIS_TEST |
+| 08 | Horizonte 2026 | PIPELINE: HORIZONTE_2026 |
+| 09 | 3AM Test | PIPELINE: EMPATIA_LIVE |
+| 10 | Cierre | PIPELINE: COMPLETE |
+| 11 | Q&A — ¡Muchas Gracias! | PIPELINE: Q&A |
 
-## Expanding the ESLint configuration
+## Navegación
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **← / →** — Slide anterior / siguiente
+- **Page Up / Page Down** — Presentador USB
+- **Espacio** — Siguiente slide
+- Botones **PREV / NEXT** en pantalla
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Desarrollo
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Docker
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+docker compose up -d --build
 ```
+
+Abre en `http://localhost:8080`.
+
+## Contacto
+
+**GiDAS** — Grupo de Investigación en Desarrollo de Arquitecturas Sostenibles
+
+- [gidas.frlp.utn.edu.ar](https://gidas.frlp.utn.edu.ar)
+- gidas@frlp.utn.edu.ar
