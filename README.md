@@ -36,8 +36,8 @@ Presentación interactiva sobre **DevOps Sostenible** desarrollada con React + T
 ## Desarrollo
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ## Docker

@@ -1,9 +1,9 @@
 FROM node:24-alpine AS build
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 FROM nginx:stable-alpine AS runtime
 COPY nginx.conf /etc/nginx/conf.d/default.conf
