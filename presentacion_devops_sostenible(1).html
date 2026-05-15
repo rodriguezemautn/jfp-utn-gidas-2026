@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFRAIT // DevOps Sostenible 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --bg-primary: #050505;
+                --bg-panel: #0a0a0a;
+                --grid-line: rgba(30, 30, 30, 0.4);
+                --accent-green: #00FF41;
+                --accent-green-dim: rgba(0, 255, 65, 0.15);
+                --accent-green-glow: rgba(0, 255, 65, 0.4);
+                --text-primary: #f0f0f0;
+                --text-secondary: #888888;
+                --border-subtle: rgba(255, 255, 255, 0.08);
+                --border-green: rgba(0, 255, 65, 0.3);
+                --font-mono: 'JetBrains Mono', monospace;
+                --font-sans: 'Geist', sans-serif;
+            }
+
+            body {
+                font-family: var(--font-sans);
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                overflow: hidden;
+                height: 100vh;
+                width: 100vw;
+                cursor: crosshair;
+            }
+
+            .grid-bg {
+                background-image: 
+                    linear-gradient(var(--grid-line) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+                background-size: 60px 60px;
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                pointer-events: none;
+            }
+
+            .grid-bg::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(ellipse at center, transparent 0%, var(--bg-primary) 70%);
+            }
+
+            .scanlines {
+                position: fixed;
+                inset: 0;
+                background: repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 0, 0, 0.03) 2px,
+                    rgba(0, 0, 0, 0.03) 4px
+                );
+                pointer-events: none;
+                z-index: 9999;
+                opacity: 0.5;
+            }
+
+            .glow-green {
+                box-shadow: 0 0 20px var(--accent-green-glow), 0 0 40px var(--accent-green-dim);
+            }
+
+            .text-glow {
+                text-shadow: 0 0 10px var(--accent-green-glow);
+            }
+
+            .bento-card {
+                background: var(--bg-panel);
+                border: 1px solid var(--border-subtle);
+                border-radius: 12px;
+                backdrop-filter: blur(10px);
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .bento-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+                opacity: 0;
+                transition: opacity 0.4s;
+            }
+
+            .bento-card:hover::before {
+                opacity: 1;
+            }
+
+            .bento-card:hover {
+                border-color: var(--border-green);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 32px rgba(0, 255, 65, 0.1);
+            }
+
+            .bento-card.active {
+                border-color: var(--accent-green);
+                box-shadow: 0 0 30px var(--accent-green-dim), inset 0 0 30px var(--accent-green-dim);
+            }
+
+            .status-bar {
+                background: rgba(5, 5, 5, 0.9);
+                border-bottom: 1px solid var(--border-subtle);
+                backdrop-filter: blur(20px);
+            }
+
+            .progress-bar {
+                background: linear-gradient(90deg, var(--accent-green), #00cc33);
+                box-shadow: 0 0 10px var(--accent-green-glow);
+                transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .terminal-text {
+                font-family: var(--font-mono);
+                font-size: 0.7rem;
+                color: var(--text-secondary);
+                line-height: 1.6;
+            }
+
+            .terminal-text .timestamp {
+                color: var(--accent-green);
+                opacity: 0.7;
+            }
+
+            .terminal-text .cmd {
+                color: #4fc3f7;
+            }
+
+            .terminal-text .success {
+                color: var(--accent-green);
+            }
+
+            .nav-node {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--text-secondary);
+                transition: all 0.3s;
+                cursor: pointer;
+            }
+
+            .nav-node:hover, .nav-node.active {
+                background: var(--accent-green);
+                box-shadow: 0 0 10px var(--accent-green-glow);
+                transform: scale(1.5);
+            }
+
+            @keyframes pulse-glow {
+                0%, 100% { opacity: 0.5; }
+                50% { opacity: 1; }
+            }
+
+            @keyframes slide-up {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            @keyframes typewriter-blink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0; }
+            }
+
+            .animate-slide-up {
+                animation: slide-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            }
+
+            .pulse-dot {
+                animation: pulse-glow 2s infinite;
+            }
+
+            .cursor-blink::after {
+                content: '_';
+                color: var(--accent-green);
+                animation: typewriter-blink 1s infinite;
+            }
+
+            ::-webkit-scrollbar {
+                width: 4px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--bg-primary);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--accent-green);
+                border-radius: 2px;
+            }
+
+            .canvas-container {
+                position: fixed;
+                inset: 0;
+                z-index: 1;
+                overflow: hidden;
+            }
+
+            .slide-layer {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                opacity: 0;
+                transform: scale(0.9) translateZ(-100px);
+                pointer-events: none;
+            }
+
+            .slide-layer.active {
+                opacity: 1;
+                transform: scale(1) translateZ(0);
+                pointer-events: all;
+            }
+
+            .metric-value {
+                font-family: var(--font-mono);
+                font-variant-numeric: tabular-nums;
+            }
+
+            .docker-container {
+                border: 1px solid var(--border-green);
+                border-radius: 8px;
+                padding: 1rem;
+                background: linear-gradient(180deg, rgba(0,255,65,0.05) 0%, transparent 100%);
+                position: relative;
+            }
+
+            .docker-container::before {
+                content: '●';
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+                color: var(--accent-green);
+                font-size: 0.6rem;
+                animation: pulse-glow 2s infinite;
+            }
+
+            .particle {
+                position: absolute;
+                width: 2px;
+                height: 2px;
+                background: var(--accent-green);
+                border-radius: 50%;
+                opacity: 0.3;
+                pointer-events: none;
+            }
+
+            .video-frame {
+                border: 1px solid var(--border-green);
+                border-radius: 12px;
+                overflow: hidden;
+                background: #000;
+                box-shadow: 0 0 40px var(--accent-green-dim);
+            }
+
+            .video-frame iframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            .poem-line {
+                font-family: var(--font-sans);
+                line-height: 1.8;
+                opacity: 0;
+                transform: translateX(-20px);
+                transition: all 0.6s ease;
+            }
+
+            .poem-line.visible {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            .replay-btn {
+                background: rgba(0, 255, 65, 0.1);
+                border: 1px solid var(--border-green);
+                color: var(--accent-green);
+                padding: 0.5rem 1.5rem;
+                border-radius: 8px;
+                font-family: var(--font-mono);
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: all 0.3s;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .replay-btn:hover {
+                background: rgba(0, 255, 65, 0.2);
+                box-shadow: 0 0 15px var(--accent-green-glow);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="scanlines"></div>
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar fixed top-0 left-0 right-0 z-50 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                <span class="font-mono text-xs text-[#00FF41] tracking-widest">INFRAIT_LIVE</span>
+            </div>
+            <div class="h-4 w-px bg-white/10"></div>
+            <span class="font-mono text-xs text-gray-500">UTN_FRLP // 2026</span>
+        </div>
+
+        <div class="flex-1 mx-8 max-w-md">
+            <div class="flex justify-between mb-1">
+                <span class="font-mono text-xs text-gray-400" id="pipeline-status">PIPELINE: BUILDING</span>
+                <span class="font-mono text-xs text-[#00FF41]" id="progress-percent">0%</span>
+            </div>
+            <div class="h-1 bg-white/5 rounded-full overflow-hidden">
+                <div class="progress-bar h-full rounded-full" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div class="flex gap-1" id="nav-nodes"></div>
+            <div class="h-4 w-px bg-white/10"></div>
+            <span class="font-mono text-xs text-gray-500" id="clock">00:00:00</span>
+        </div>
+    </div>
+
+    <!-- Main Canvas -->
+    <div class="canvas-container" id="canvas">
+
+        <!-- SLIDE 0: HOOK / INTRO -->
+        <div class="slide-layer active" id="slide-0">
+            <div class="w-full max-w-6xl px-8">
+                <div class="grid grid-cols-12 gap-4 h-[70vh]">
+                    <div class="col-span-7 bento-card p-8 flex flex-col justify-between active">
+                        <div>
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-3 h-3 rounded-full bg-[#00FF41] pulse-dot"></div>
+                                <span class="font-mono text-xs text-[#00FF41] tracking-widest">SYSTEM_ALERT // 2026</span>
+                            </div>
+                            <h1 class="font-sans text-5xl font-bold leading-tight mb-4">
+                                Metodologias <span class="text-[#00FF41] text-glow">DevOps</span><br>
+                                para el Desarrollo<br>
+                                <span class="text-gray-500">Sostenible</span>
+                            </h1>
+                            <p class="font-mono text-sm text-gray-400 mt-4 max-w-md">
+                                Cultura - GreenOps - Arquitecturas de Bajo Impacto - IA Local - SRE Evolucionado
+                            </p>
+                        </div>
+                        <div class="flex items-end justify-between">
+                            <div class="terminal-text">
+                                <div><span class="timestamp">[10:58:14]</span> <span class="cmd">$</span> init_presentation --mode=sustainable</div>
+                                <div><span class="timestamp">[10:58:15]</span> <span class="cmd">$</span> loading_modules: green_ops, carbon_aware, sre_v2</div>
+                                <div><span class="timestamp">[10:58:16]</span> <span class="success">ok</span> connection_established: GMET_EMPATHY_PROTOCOL</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-mono text-xs text-gray-500">LABORATORIO</div>
+                                <div class="font-sans text-lg font-semibold">INFRAIT</div>
+                                <div class="font-mono text-xs text-[#00FF41]">UTN FRLP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-5 flex flex-col gap-4">
+                        <div class="bento-card p-6 flex-1">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="font-mono text-xs text-gray-500">GMET_BRIDGE</span>
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41]"></div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="docker-container">
+                                    <div class="font-mono text-xs text-gray-400 mb-2">GMET - Diseno Inclusivo</div>
+                                    <p class="font-sans text-sm text-gray-300 italic">"Un mundo donde los crash dummies no representan a la mujer, es un mundo incompleto."</p>
+                                </div>
+                                <div class="flex items-center justify-center">
+                                    <svg width="40" height="40" viewBox="0 0 40 40">
+                                        <line x1="20" y1="0" x2="20" y2="40" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                        <polygon points="20,35 15,25 25,25" fill="#00FF41" opacity="0.8"/>
+                                    </svg>
+                                </div>
+                                <div class="docker-container border-[#00FF41]">
+                                    <div class="font-mono text-xs text-[#00FF41] mb-2">DevOps - Ingenieria Sostenible</div>
+                                    <p class="font-sans text-sm text-gray-300">"La misma empatia radical aplicada a la operacion: para el negocio, el planeta y las personas."</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono text-xs text-gray-500">AGENDA_PREVIEW</span>
+                                <span class="font-mono text-xs text-[#00FF41]">5 BLOQUES</span>
+                            </div>
+                            <div class="mt-3 grid grid-cols-5 gap-2">
+                                <div class="h-8 rounded bg-[#00FF41]/10 border border-[#00FF41]/30 flex items-center justify-center font-mono text-xs text-[#00FF41]">01</div>
+                                <div class="h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-500">02</div>
+                                <div class="h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-500">03</div>
+                                <div class="h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-500">04</div>
+                                <div class="h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center font-mono text-xs text-gray-500">05</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 1: EL IMPERATIVO 2026 -->
+        <div class="slide-layer" id="slide-1">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">BLOQUE 01 // IMPERATIVO_2026</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">El Costo Energetico de la Computacion</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4 h-[60vh]">
+                    <div class="col-span-8 grid grid-cols-2 gap-4">
+                        <div class="bento-card p-6 flex flex-col justify-between">
+                            <div class="font-mono text-xs text-gray-500">GLOBAL_ENERGY_CONSUMPTION</div>
+                            <div class="metric-value text-6xl font-bold text-[#00FF41] text-glow" id="metric-energy">0</div>
+                            <div class="font-sans text-sm text-gray-400">% electricidad global consumida por centros de datos en 2026</div>
+                            <div class="font-mono text-xs text-gray-600 mt-2">FUENTE: IEA, 2025</div>
+                        </div>
+
+                        <div class="bento-card p-6 flex flex-col justify-between">
+                            <div class="font-mono text-xs text-gray-500">DATA_TRAFFIC_GROWTH</div>
+                            <div class="metric-value text-6xl font-bold text-white">x<span id="metric-traffic">0</span></div>
+                            <div class="font-sans text-sm text-gray-400">crecimiento del trafico de datos en 5 anos (IA generativa)</div>
+                            <div class="font-mono text-xs text-gray-600 mt-2">PROYECTADO</div>
+                        </div>
+
+                        <div class="bento-card p-6 col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="font-mono text-xs text-gray-500">EMISIONES_TIC_VS_AVIACION</span>
+                                <span class="font-mono text-xs text-[#00FF41]">~2% vs ~2.5%</span>
+                            </div>
+                            <div class="relative h-24">
+                                <svg width="100%" height="100%" viewBox="0 0 400 100" preserveAspectRatio="none">
+                                    <line x1="0" y1="50" x2="400" y2="50" stroke="#333" stroke-width="1"/>
+                                    <rect x="20" y="20" width="160" height="60" fill="rgba(0,255,65,0.2)" stroke="#00FF41" stroke-width="1" rx="4"/>
+                                    <rect x="220" y="15" width="160" height="70" fill="rgba(255,255,255,0.05)" stroke="#666" stroke-width="1" rx="4"/>
+                                    <text x="100" y="55" text-anchor="middle" fill="#00FF41" font-family="JetBrains Mono" font-size="12">SECTOR TIC</text>
+                                    <text x="300" y="55" text-anchor="middle" fill="#888" font-family="JetBrains Mono" font-size="12">AVIACION</text>
+                                </svg>
+                            </div>
+                            <p class="font-sans text-sm text-gray-400 mt-2">El sector TIC equipara al transporte aereo mundial en emisiones globales</p>
+                        </div>
+                    </div>
+
+                    <div class="col-span-4 flex flex-col gap-4">
+                        <div class="bento-card p-6 flex-1">
+                            <div class="font-mono text-xs text-[#00FF41] mb-4">ALERTA_CRITICA</div>
+                            <p class="font-sans text-lg leading-relaxed text-gray-300">
+                                "El crecimiento infinito de recursos llego a su fin. La eficiencia ya no es opcional: es <span class="text-[#00FF41]">supervivencia</span>."
+                            </p>
+                            <div class="mt-6 terminal-text">
+                                <div><span class="timestamp">[WARN]</span> resource_limit: approaching</div>
+                                <div><span class="timestamp">[INFO]</span> efficiency_mode: required</div>
+                                <div><span class="timestamp">[ACTION]</span> shift_left: sustainability</div>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-4">
+                            <div class="font-mono text-xs text-gray-500 mb-2">LIVE_METRICS</div>
+                            <canvas id="live-chart-1" width="300" height="100" class="w-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: VIDEO HOOK - NATTV CRASH DUMMY PSA -->
+        <div class="slide-layer" id="slide-2">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-4">
+                    <span class="font-mono text-xs text-[#00FF41]">HOOK // NATTV_CRASH_DUMMY_PSA_80s</span>
+                    <h2 class="font-sans text-3xl font-bold mt-2">El Paralelo del Crash Dummy</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-6 h-[65vh]">
+                    <!-- Video Container -->
+                    <div class="col-span-7 flex flex-col gap-4">
+                        <div class="video-frame flex-1 relative">
+                            <div id="crash-video" class="w-full h-full"></div>
+
+                            <!-- Video Overlay Controls -->
+                            <div id="video-overlay" class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 pointer-events-none transition-opacity">
+                                <button id="play-overlay-btn" class="replay-btn text-lg">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                    REPRODUCIR
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                                <span class="font-mono text-xs text-gray-500">NATTV · Crash Dummy PSA · 80s</span>
+                            </div>
+                            <button id="replay-btn" class="replay-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="1 4 1 10 7 10"></polyline>
+                                    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                                </svg>
+                                REPLAY
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Poem Text -->
+                    <div class="col-span-5 flex flex-col justify-center">
+                        <div class="bento-card p-8 h-full flex flex-col justify-center active">
+                            <div class="font-mono text-xs text-[#00FF41] mb-6">MANIFESTO // SYSTEM_DESIGN_FAILURE</div>
+
+                            <div class="space-y-4" id="poem-container">
+                                <div class="poem-line font-sans text-lg text-gray-300" data-delay="0">
+                                    Durante decadas,
+                                </div>
+                                <div class="poem-line font-sans text-lg text-gray-300" data-delay="200">
+                                    disenamos software
+                                </div>
+                                <div class="poem-line font-sans text-lg text-gray-300" data-delay="400">
+                                    como los ingenieros
+                                </div>
+                                <div class="poem-line font-sans text-lg text-gray-300" data-delay="600">
+                                    automotrices de los 80s:
+                                </div>
+                                <div class="poem-line font-sans text-xl text-[#00FF41] font-semibold mt-4" data-delay="1000">
+                                    Elegante en el laboratorio.
+                                </div>
+                                <div class="poem-line font-sans text-xl text-[#00FF41] font-semibold" data-delay="1200">
+                                    Catastrofico al chocar con la realidad.
+                                </div>
+                                <div class="poem-line font-sans text-lg text-gray-400 italic mt-6" data-delay="1800">
+                                    "No necesitamos heroes que no duermen.
+                                </div>
+                                <div class="poem-line font-sans text-lg text-gray-400 italic" data-delay="2000">
+                                    Necesitamos sistemas diseñados para sobrevivir."
+                                </div>
+                            </div>
+
+                            <div class="mt-8 pt-6 border-t border-white/10">
+                                <div class="terminal-text">
+                                    <div><span class="timestamp">[CRITICAL]</span> design_flaw_detected: crash_dummy_syndrome</div>
+                                    <div><span class="timestamp">[REMEDIATION]</span> shift_from_heroes_to_systems: required</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: GREENOPS -->
+        <div class="slide-layer" id="slide-3">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">BLOQUE 02 // GREENOPS_PIPELINE</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">Ciclo de Vida Sostenible</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 bento-card p-6 mb-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4 flex-1">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                        <span class="font-mono text-xs text-[#00FF41]">CODE</span>
+                                    </div>
+                                    <span class="font-mono text-xs text-gray-500 mt-2">Lines scanned</span>
+                                </div>
+                                <svg width="60" height="20" viewBox="0 0 60 20">
+                                    <line x1="0" y1="10" x2="50" y2="10" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="50,10 45,5 45,15" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/20 flex items-center justify-center">
+                                        <span class="font-mono text-xs text-gray-400">BUILD</span>
+                                    </div>
+                                    <span class="font-mono text-xs text-gray-500 mt-2">Energy/build</span>
+                                </div>
+                                <svg width="60" height="20" viewBox="0 0 60 20">
+                                    <line x1="0" y1="10" x2="50" y2="10" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="50,10 45,5 45,15" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/20 flex items-center justify-center">
+                                        <span class="font-mono text-xs text-gray-400">TEST</span>
+                                    </div>
+                                    <span class="font-mono text-xs text-gray-500 mt-2">Carbon/test</span>
+                                </div>
+                                <svg width="60" height="20" viewBox="0 0 60 20">
+                                    <line x1="0" y1="10" x2="50" y2="10" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="50,10 45,5 45,15" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-white/5 border border-white/20 flex items-center justify-center">
+                                        <span class="font-mono text-xs text-gray-400">DEPLOY</span>
+                                    </div>
+                                    <span class="font-mono text-xs text-gray-500 mt-2">SCI score</span>
+                                </div>
+                                <svg width="60" height="20" viewBox="0 0 60 20">
+                                    <line x1="0" y1="10" x2="50" y2="10" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="50,10 45,5 45,15" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                        <span class="font-mono text-xs text-[#00FF41]">RUN</span>
+                                    </div>
+                                    <span class="font-mono text-xs text-gray-500 mt-2">Carbon/req</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 bento-card p-6">
+                        <div class="font-mono text-xs text-gray-500 mb-4">SCI_FORMULA // Green Software Foundation v1.0</div>
+                        <div class="docker-container text-center py-8">
+                            <div class="font-mono text-2xl text-[#00FF41]">
+                                SCI = (E x I) + M
+                            </div>
+                            <div class="font-sans text-sm text-gray-400 mt-4">
+                                por unidad funcional (request, usuario, transaccion)
+                            </div>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-2">
+                            <div class="text-center">
+                                <div class="font-mono text-lg text-[#00FF41]">E</div>
+                                <div class="font-mono text-xs text-gray-500">Energia</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-mono text-lg text-[#00FF41]">I</div>
+                                <div class="font-mono text-xs text-gray-500">Intensidad</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="font-mono text-lg text-[#00FF41]">M</div>
+                                <div class="font-mono text-xs text-gray-500">Emisiones</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 flex flex-col gap-4">
+                        <div class="bento-card p-6 flex-1">
+                            <div class="font-mono text-xs text-[#00FF41] mb-3">CARBON_AWARE_SCHEDULING</div>
+                            <p class="font-sans text-sm text-gray-300 mb-4">Mover cargas de trabajo a franjas horarias con menor intensidad de carbono en la red electrica</p>
+                            <div class="flex items-center gap-2">
+                                <div class="h-2 flex-1 rounded-full bg-white/5 overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-[#00FF41] to-[#00cc33] w-3/4"></div>
+                                </div>
+                                <span class="font-mono text-xs text-[#00FF41]">SDGs compliant</span>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-6 flex-1">
+                            <div class="font-mono text-xs text-[#00FF41] mb-3">PIPELINE_CARBON_GATE</div>
+                            <p class="font-sans text-sm text-gray-300">El pipeline CI/CD rechaza deployments que superen el SCI threshold definido</p>
+                            <div class="mt-3 terminal-text">
+                                <div><span class="timestamp">[GATE]</span> <span class="cmd">if</span> sci_score &gt; threshold: <span class="success">reject()</span></div>
+                                <div><span class="timestamp">[GATE]</span> <span class="cmd">else</span>: <span class="success">approve()</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: ARQUITECTURAS -->
+        <div class="slide-layer" id="slide-4">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">BLOQUE 03 // LOW_IMPACT_ARCH</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">Arquitecturas de Bajo Impacto</h2>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 h-[65vh]">
+                    <div class="bento-card p-6 flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF41" stroke-width="2">
+                                    <rect x="2" y="2" width="20" height="20" rx="2"/>
+                                    <path d="M2 12h20M12 2v20"/>
+                                </svg>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">VIRTUALIZACION</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-4">Inteligente</h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">eBPF</div>
+                                <div class="font-sans text-xs text-gray-400">Observabilidad de kernel sin overhead</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">Unikernels</div>
+                                <div class="font-sans text-xs text-gray-400">SO minimo per-app (10x menos RAM)</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">Firecracker</div>
+                                <div class="font-sans text-xs text-gray-400">microVMs: densidad x5, frio &lt;125ms</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/10">
+                            <span class="font-mono text-xs text-gray-500">IMPACTO: </span>
+                            <span class="font-mono text-xs text-[#00FF41]">-85% overhead</span>
+                        </div>
+                    </div>
+
+                    <div class="bento-card p-6 flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF41" stroke-width="2">
+                                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                                    <polyline points="2 17 12 22 22 17"/>
+                                    <polyline points="2 12 12 17 22 12"/>
+                                </svg>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">EDGE</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-4">Computing</h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">Procesamiento Local</div>
+                                <div class="font-sans text-xs text-gray-400">Procesar donde se genera el dato elimina trafico</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">WebAssembly</div>
+                                <div class="font-sans text-xs text-gray-400">WASM en el borde: portable y eficiente</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">Latencia &lt;1ms</div>
+                                <div class="font-sans text-xs text-gray-400">+ menor trafico = menor huella</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/10">
+                            <span class="font-mono text-xs text-gray-500">CASOS: </span>
+                            <span class="font-mono text-xs text-[#00FF41]">IoT, Salud, Smart Cities</span>
+                        </div>
+                    </div>
+
+                    <div class="bento-card p-6 flex flex-col">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-8 h-8 rounded bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF41" stroke-width="2">
+                                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                    <path d="M2 17l10 5 10-5"/>
+                                    <path d="M2 12l10 5 10-5"/>
+                                </svg>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">ORQUESTACION</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-4">Carbon-Aware</h3>
+                        <div class="space-y-3 flex-1">
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">K8s Carbon Scheduler</div>
+                                <div class="font-sans text-xs text-gray-400">Nodes en zonas verdes</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">KEDA v2</div>
+                                <div class="font-sans text-xs text-gray-400">Scale-to-zero nativo (CNCF)</div>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-xs text-[#00FF41] mb-1">Spot + Time-shifting</div>
+                                <div class="font-sans text-xs text-gray-400">Batch jobs en franjas verdes</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/10">
+                            <span class="font-mono text-xs text-gray-500">CONVERGENCIA: </span>
+                            <span class="font-mono text-xs text-[#00FF41]">FinOps &lt;-&gt; GreenOps</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: IA LOCAL -->
+        <div class="slide-layer" id="slide-5">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">BLOQUE 04 // LOCAL_AI_STACK</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">IA Local & Automatizacion</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-8 grid grid-cols-2 gap-4">
+                        <div class="bento-card p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41]"></div>
+                                <span class="font-mono text-xs text-gray-400">ANALISIS_DE_LOGS</span>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-lg text-[#00FF41]">Ollama + Llama 3.1</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">-90% latencia vs API externa</div>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41]"></div>
+                                <span class="font-mono text-xs text-gray-400">CODE_REVIEW_AUTO</span>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-lg text-[#00FF41]">Local Codestral/Qwen</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">Sin datos en nube externa</div>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41]"></div>
+                                <span class="font-mono text-xs text-gray-400">IaC_GENERATION</span>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-lg text-[#00FF41]">MCP + LLM Local</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">Infra como prompt con guardrails</div>
+                            </div>
+                        </div>
+
+                        <div class="bento-card p-5">
+                            <div class="flex items-center gap-3 mb-3">
+                                <div class="w-2 h-2 rounded-full bg-[#00FF41]"></div>
+                                <span class="font-mono text-xs text-gray-400">INCIDENT_ROOT_CAUSE</span>
+                            </div>
+                            <div class="docker-container">
+                                <div class="font-mono text-lg text-[#00FF41]">RAG sobre Runbooks</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">Diagnostico en segundos</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-4 bento-card p-6">
+                        <div class="font-mono text-xs text-[#00FF41] mb-4">MCP_STACK_2026</div>
+                        <div class="space-y-3">
+                            <div class="docker-container text-center">
+                                <div class="font-mono text-sm text-white">Agente IA (orquestador)</div>
+                            </div>
+                            <div class="flex justify-center">
+                                <svg width="20" height="30" viewBox="0 0 20 30">
+                                    <line x1="10" y1="0" x2="10" y2="25" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="10,25 5,20 15,20" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <div class="docker-container text-center">
+                                <div class="font-mono text-sm text-white">MCP Server (tools)</div>
+                            </div>
+                            <div class="flex justify-center">
+                                <svg width="20" height="30" viewBox="0 0 20 30">
+                                    <line x1="10" y1="0" x2="10" y2="25" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="10,25 5,20 15,20" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <div class="docker-container text-center">
+                                <div class="font-mono text-sm text-white">Infra / APIs / K8s</div>
+                            </div>
+                            <div class="flex justify-center">
+                                <svg width="20" height="30" viewBox="0 0 20 30">
+                                    <line x1="10" y1="0" x2="10" y2="25" stroke="#00FF41" stroke-width="1" opacity="0.5"/>
+                                    <polygon points="10,25 5,20 15,20" fill="#00FF41" opacity="0.5"/>
+                                </svg>
+                            </div>
+                            <div class="docker-container text-center border-white/20">
+                                <div class="font-mono text-sm text-gray-400">Guardrails Humanos</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/10 terminal-text">
+                            <div>Ollama - llama.cpp</div>
+                            <div>LM Studio - Anthropic MCP</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: SRE -->
+        <div class="slide-layer" id="slide-6">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">BLOQUE 05 // SRE_V2_SUSTAINABILITY</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">SRE Evolucionado: SLOs de Sostenibilidad</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-8 bento-card p-6">
+                        <div class="font-mono text-xs text-gray-500 mb-4">METRIC_COMPARISON_TABLE</div>
+                        <div class="overflow-hidden">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-b border-white/10">
+                                        <th class="text-left py-3 font-mono text-xs text-gray-400">METRICA SRE</th>
+                                        <th class="text-left py-3 font-mono text-xs text-gray-400">SLO TRADICIONAL</th>
+                                        <th class="text-left py-3 font-mono text-xs text-[#00FF41]">SLO SOSTENIBILIDAD 2026</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="font-mono text-sm">
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-4 text-gray-300">Disponibilidad</td>
+                                        <td class="py-4 text-gray-500">99.9% uptime</td>
+                                        <td class="py-4 text-[#00FF41]">99.9% uptime + &lt;X gCO2/req</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-4 text-gray-300">Latencia</td>
+                                        <td class="py-4 text-gray-500">p99 &lt; 200ms</td>
+                                        <td class="py-4 text-[#00FF41]">p99 &lt; 200ms + eficiencia energetica</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-4 text-gray-300">Error Rate</td>
+                                        <td class="py-4 text-gray-500">&lt; 0.1% errors</td>
+                                        <td class="py-4 text-[#00FF41]">&lt; 0.1% errors + carbon waste &lt; umbral</td>
+                                    </tr>
+                                    <tr class="border-b border-white/5">
+                                        <td class="py-4 text-gray-300">Throughput</td>
+                                        <td class="py-4 text-gray-500">X req/seg sostenido</td>
+                                        <td class="py-4 text-[#00FF41]">X req/seg + energia por req &lt;= Y</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-4 text-gray-300">Error Budget</td>
+                                        <td class="py-4 text-gray-500">Tiempo permitido de falla</td>
+                                        <td class="py-4 text-[#00FF41]">Budget dual: falla + carbon overage</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-span-4 flex flex-col gap-4">
+                        <div class="bento-card p-6 flex-1 flex flex-col justify-center">
+                            <div class="font-mono text-xs text-[#00FF41] mb-4">SRE_MANUAL_2026</div>
+                            <blockquote class="font-sans text-lg italic leading-relaxed text-gray-300">
+                                "Un sistema que cumple el SLO de disponibilidad pero consume el doble de energia necesaria, <span class="text-[#00FF41]">esta fallando</span>."
+                            </blockquote>
+                        </div>
+
+                        <div class="bento-card p-4">
+                            <div class="font-mono text-xs text-gray-500 mb-2">ERROR_BUDGET_VISUALIZATION</div>
+                            <div class="flex gap-2 h-16">
+                                <div class="flex-1 rounded bg-[#00FF41]/20 border border-[#00FF41]/40 flex items-center justify-center">
+                                    <span class="font-mono text-xs text-[#00FF41]">FALLA</span>
+                                </div>
+                                <div class="flex-1 rounded bg-[#00FF41]/20 border border-[#00FF41]/40 flex items-center justify-center">
+                                    <span class="font-mono text-xs text-[#00FF41]">CARBON</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 font-mono text-xs text-gray-500 text-center">Budget Dual</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: SINTESIS -->
+        <div class="slide-layer" id="slide-7">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">SINTESIS // TRES_PILARES</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">Los Tres Pilares de la Sostenibilidad DevOps</h2>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 h-[60vh]">
+                    <div class="bento-card p-8 flex flex-col active">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <span class="font-sans text-xl font-bold text-[#00FF41]">01</span>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">HUMANA</span>
+                        </div>
+                        <h3 class="font-sans text-2xl font-bold mb-6">Cultura</h3>
+                        <div class="space-y-4 flex-1">
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">Cultura Blameless</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">"You build it, you run it"</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">Error budgets sin blame</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">On-call sostenible (SRE)</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-white/10">
+                            <div class="font-mono text-xs text-gray-500">PSYCHOLOGICAL_SAFETY: ENABLED</div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card p-8 flex flex-col">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <span class="font-sans text-xl font-bold text-[#00FF41]">02</span>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">TECNICA</span>
+                        </div>
+                        <h3 class="font-sans text-2xl font-bold mb-6">Arquitectura</h3>
+                        <div class="space-y-4 flex-1">
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">12-Factor Apps</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">CI/CD con carbon gates</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">Observabilidad total</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">20% tiempo en refactoring</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-white/10">
+                            <div class="font-mono text-xs text-gray-500">TECHNICAL_EXCELLENCE: REQUIRED</div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card p-8 flex flex-col">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-full bg-[#00FF41]/10 border border-[#00FF41] flex items-center justify-center">
+                                <span class="font-sans text-xl font-bold text-[#00FF41]">03</span>
+                            </div>
+                            <span class="font-mono text-xs text-[#00FF41]">ECONOMICA</span>
+                        </div>
+                        <h3 class="font-sans text-2xl font-bold mb-6">Negocio</h3>
+                        <div class="space-y-4 flex-1">
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">FinOps + GreenOps unificados</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">SCI como KPI de producto</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">DORA Metrics como brujula</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-1.5 h-1.5 rounded-full bg-[#00FF41] mt-2"></div>
+                                <span class="font-sans text-gray-300">Platform Engineering</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-white/10">
+                            <div class="font-mono text-xs text-gray-500">COST_EFFICIENCY: OPTIMIZED</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: HORIZONTE -->
+        <div class="slide-layer" id="slide-8">
+            <div class="w-full max-w-6xl px-8">
+                <div class="mb-6">
+                    <span class="font-mono text-xs text-[#00FF41]">HORIZONTE_2026 // ERA_PLATAFORMAS</span>
+                    <h2 class="font-sans text-4xl font-bold mt-2">La Era de las Plataformas Inteligentes</h2>
+                </div>
+
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-6 bento-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                            <span class="font-mono text-xs text-[#00FF41]">PLATFORM_ENGINEERING</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-3">Golden Paths + IDP</h3>
+                        <p class="font-sans text-sm text-gray-400 mb-4">Los devs crean valor, no pelean con infra. Gartner: 80% de orgs con IDP para 2026.</p>
+                        <div class="docker-container">
+                            <div class="font-mono text-xs text-gray-400">Internal Developer Platform</div>
+                            <div class="mt-2 flex gap-2">
+                                <span class="px-2 py-1 rounded bg-[#00FF41]/10 border border-[#00FF41]/30 font-mono text-xs text-[#00FF41]">Self-Service</span>
+                                <span class="px-2 py-1 rounded bg-[#00FF41]/10 border border-[#00FF41]/30 font-mono text-xs text-[#00FF41]">Golden Paths</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 bento-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                            <span class="font-mono text-xs text-[#00FF41]">AI_NATIVE_DEVOPS</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-3">Agentes Co-pilotan CI/CD</h3>
+                        <p class="font-sans text-sm text-gray-400 mb-4">Desde PR hasta incident response. State of DevOps 2025: -40% MTTR con AI-assisted ops.</p>
+                        <div class="docker-container">
+                            <div class="font-mono text-xs text-gray-400">AI-Assisted Operations</div>
+                            <div class="mt-2 font-mono text-xs text-[#00FF41]">MTTR: -40% | Deployments: +4x</div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 bento-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                            <span class="font-mono text-xs text-[#00FF41]">FINOPS_GREENOPS</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-3">Convergencia Total</h3>
+                        <p class="font-sans text-sm text-gray-400 mb-4">Un solo dashboard de costo + carbono. El costo ya no es solo dinero; es energia, es toneladas de CO2.</p>
+                        <div class="flex gap-2">
+                            <div class="flex-1 h-8 rounded bg-gradient-to-r from-[#00FF41]/20 to-[#00FF41]/5 border border-[#00FF41]/30 flex items-center justify-center">
+                                <span class="font-mono text-xs text-[#00FF41]">$ COSTO</span>
+                            </div>
+                            <div class="flex-1 h-8 rounded bg-gradient-to-r from-[#00FF41]/20 to-[#00FF41]/5 border border-[#00FF41]/30 flex items-center justify-center">
+                                <span class="font-mono text-xs text-[#00FF41]">CO2 CARBONO</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-6 bento-card p-6">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-2 h-2 rounded-full bg-[#00FF41] pulse-dot"></div>
+                            <span class="font-mono text-xs text-[#00FF41]">MCP_2026</span>
+                        </div>
+                        <h3 class="font-sans text-xl font-semibold mb-3">Infra as Prompt</h3>
+                        <p class="font-sans text-sm text-gray-400 mb-4">Model Context Protocol (Anthropic, 2024). Agentes orquestan K8s, Terraform, observabilidad con guardrails humanos.</p>
+                        <div class="docker-container font-mono text-xs text-[#00FF41]">
+                            &gt; deploy --cluster=prod --carbon-aware=true
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 bento-card p-6">
+                        <div class="font-mono text-xs text-gray-500 mb-4">DORA_2025_METRICS // ELITE_PERFORMERS</div>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="metric-value text-4xl font-bold text-[#00FF41] text-glow">4x</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">mas despliegues</div>
+                                <div class="font-mono text-xs text-gray-600">elite vs low</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="metric-value text-4xl font-bold text-[#00FF41] text-glow">24h</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">lead time</div>
+                                <div class="font-mono text-xs text-gray-600">elite performers</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="metric-value text-4xl font-bold text-[#00FF41] text-glow">&lt;1h</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">MTTR promedio</div>
+                                <div class="font-mono text-xs text-gray-600">alto rendimiento</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="metric-value text-4xl font-bold text-[#00FF41] text-glow">-40%</div>
+                                <div class="font-sans text-sm text-gray-400 mt-2">MTTR con AI</div>
+                                <div class="font-mono text-xs text-gray-600">State of DevOps 2025</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: 3AM TEST -->
+        <div class="slide-layer" id="slide-9">
+            <div class="w-full max-w-4xl px-8 text-center">
+                <div class="mb-8">
+                    <span class="font-mono text-xs text-[#00FF41]">EXPERIENCIA_EN_VIVO // 3:00_AM_TEST</span>
+                </div>
+
+                <div class="bento-card p-12 max-w-2xl mx-auto">
+                    <div class="space-y-8">
+                        <div class="flex items-center justify-center gap-4">
+                            <div class="w-3 h-3 rounded-full bg-[#00FF41] pulse-dot"></div>
+                            <span class="font-mono text-xs text-[#00FF41]">TEST_DE_EMPATIA</span>
+                            <div class="w-3 h-3 rounded-full bg-[#00FF41] pulse-dot"></div>
+                        </div>
+
+                        <div class="space-y-6 text-left">
+                            <div class="flex gap-4">
+                                <span class="font-mono text-2xl text-[#00FF41]">1</span>
+                                <p class="font-sans text-lg text-gray-300">Levanten la mano si alguna vez sintieron que la infra era "el problema de otro."</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <span class="font-mono text-2xl text-[#00FF41]">2</span>
+                                <p class="font-sans text-lg text-gray-300">Cierren los ojos. Viernes, 3 AM. Sistema caido. Usuario real sin acceso a servicio esencial.</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <span class="font-mono text-2xl text-[#00FF41]">3</span>
+                                <p class="font-sans text-lg text-gray-300">Dos caminos: culpar al ultimo push o confiar en el proceso y seguir durmiendo.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-white/10">
+                            <p class="font-sans text-xl text-[#00FF41] font-semibold">
+                                "En INFRAIT no apagamos incendios.<br>
+                                Disenamos sistemas que no se incendian."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <p class="font-sans text-2xl font-bold text-white">
+                        "Construyamos sistemas que cuiden a las personas."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: CIERRE -->
+        <div class="slide-layer" id="slide-10">
+            <div class="w-full max-w-4xl px-8">
+                <div class="mb-8 text-center">
+                    <span class="font-mono text-xs text-[#00FF41]">CIERRE // RECURSOS_Y_CONTACTO</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div class="bento-card p-6">
+                        <div class="font-mono text-xs text-[#00FF41] mb-3">CULTURA</div>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <div>Blameless</div>
+                            <div>Shared Ownership</div>
+                            <div>Psychological Safety</div>
+                            <div>SRE</div>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6">
+                        <div class="font-mono text-xs text-[#00FF41] mb-3">TECNICA</div>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <div>12-Factor</div>
+                            <div>CI/CD</div>
+                            <div>GreenOps</div>
+                            <div>SCI - Carbon Budgets - SLOs</div>
+                        </div>
+                    </div>
+                    <div class="bento-card p-6">
+                        <div class="font-mono text-xs text-[#00FF41] mb-3">FUTURO</div>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <div>Platform Eng.</div>
+                            <div>FinOps</div>
+                            <div>AI-Native</div>
+                            <div>MCP - Edge</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bento-card p-8 text-center">
+                    <div class="font-mono text-xs text-gray-500 mb-4">REFERENCIAS</div>
+                    <div class="font-mono text-xs text-gray-400 space-y-1">
+                        <div>Accelerate (Forsgren 2018) - DevOps Handbook (Kim 2016) - SRE Book (Google/OReilly)</div>
+                        <div>12-Factor (2025) - Green Software Foundation - Tech Radar Vol.33 (Thoughtworks)</div>
+                        <div>State of DevOps 2025 - Gartner Platform Eng. 2026</div>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-white/10">
+                        <div class="font-sans text-lg font-semibold text-[#00FF41]">Laboratorio INFRAIT - UTN FRLP</div>
+                        <div class="font-mono text-xs text-gray-500 mt-2">Sumate al laboratorio - Construi el futuro digital de Argentina</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex items-center gap-4">
+        <button id="prev-btn" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#00FF41] hover:border-[#00FF41] transition-all font-mono text-sm">
+            &lt; PREV
+        </button>
+        <span class="font-mono text-xs text-gray-500" id="slide-counter">01 / 11</span>
+        <button id="next-btn" class="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#00FF41] hover:border-[#00FF41] transition-all font-mono text-sm">
+            NEXT &gt;
+        </button>
+    </div>
+
+    <script>
+
+    // YouTube Player API
+    var ytPlayer = null;
+    var ytAPIReady = false;
+
+    // Load YouTube IFrame API
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+        ytAPIReady = true;
+        // Initialize player only if we're on slide 2
+        if (currentSlide === 2) {
+            initYouTubePlayer();
+        }
+    }
+
+    function initYouTubePlayer() {
+        if (!ytAPIReady || ytPlayer !== null) return;
+
+        ytPlayer = new YT.Player('crash-video', {
+            videoId: 'uYQR5ktq7W0',
+            playerVars: {
+                autoplay: 1,
+                mute: 1,
+                controls: 1,
+                rel: 0,
+                modestbranding: 1,
+                playsinline: 1,
+                enablejsapi: 1,
+                start: 0
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        var iframe = document.querySelector('#crash-video iframe');
+        if (iframe) {
+            iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        }
+        event.target.playVideo();
+    }
+
+    function onPlayerStateChange(event) {
+        // Show overlay when video ends
+        if (event.data === YT.PlayerState.ENDED) {
+            document.getElementById('video-overlay').style.opacity = '1';
+            document.getElementById('video-overlay').style.pointerEvents = 'all';
+        } else if (event.data === YT.PlayerState.PLAYING) {
+            document.getElementById('video-overlay').style.opacity = '0';
+            document.getElementById('video-overlay').style.pointerEvents = 'none';
+        }
+    }
+
+    function replayVideo() {
+        if (ytPlayer && ytPlayer.playVideo) {
+            ytPlayer.seekTo(0);
+            ytPlayer.playVideo();
+            document.getElementById('video-overlay').style.opacity = '0';
+            document.getElementById('video-overlay').style.pointerEvents = 'none';
+        }
+    }
+
+    // Replay button event listeners
+    document.getElementById('replay-btn').addEventListener('click', replayVideo);
+    document.getElementById('play-overlay-btn').addEventListener('click', replayVideo);
+
+    // Presentation State
+    const totalSlides = 11;
+    let currentSlide = 0;
+    const slideIds = Array.from({length: totalSlides}, (_, i) => `slide-${i}`);
+
+    // Initialize Navigation Nodes
+    const navNodesContainer = document.getElementById('nav-nodes');
+    for (let i = 0; i < totalSlides; i++) {
+        const node = document.createElement('div');
+        node.className = `nav-node ${i === 0 ? 'active' : ''}`;
+        node.onclick = () => goToSlide(i);
+        navNodesContainer.appendChild(node);
+    }
+
+    // Update Progress
+    function updateProgress() {
+        const percent = ((currentSlide + 1) / totalSlides) * 100;
+        document.getElementById('progress-bar').style.width = `${percent}%`;
+        document.getElementById('progress-percent').textContent = `${Math.round(percent)}%`;
+        document.getElementById('slide-counter').textContent = 
+            `${String(currentSlide + 1).padStart(2, '0')} / ${totalSlides}`;
+
+        const statuses = [
+            'PIPELINE: INITIALIZING',
+            'PIPELINE: IMPERATIVO_2026',
+            'PIPELINE: HOOK_VIDEO_LOAD',
+            'PIPELINE: GREENOPS_BUILD',
+            'PIPELINE: ARCH_DEPLOY',
+            'PIPELINE: AI_STACK_LOAD',
+            'PIPELINE: SRE_V2_CHECK',
+            'PIPELINE: SINTESIS_TEST',
+            'PIPELINE: HORIZONTE_2026',
+            'PIPELINE: EMPATIA_LIVE',
+            'PIPELINE: COMPLETE'
+        ];
+        document.getElementById('pipeline-status').textContent = statuses[currentSlide];
+
+        document.querySelectorAll('.nav-node').forEach((node, i) => {
+            node.classList.toggle('active', i === currentSlide);
+        });
+    }
+
+    // Slide Navigation
+    function goToSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+
+        // Hide current
+        document.getElementById(slideIds[currentSlide]).classList.remove('active');
+
+        // Show new
+        currentSlide = index;
+        document.getElementById(slideIds[currentSlide]).classList.add('active');
+
+        updateProgress();
+
+        // Handle video slide
+        if (currentSlide === 2) {
+            initYouTubePlayer();
+            animatePoem();
+        } else {
+            // Pause video when leaving slide
+            if (ytPlayer && ytPlayer.pauseVideo) {
+                ytPlayer.pauseVideo();
+            }
+        }
+
+        // Animate metrics if on slide 1
+        if (currentSlide === 1) {
+            animateMetrics();
+            startLiveChart();
+        }
+    }
+
+    function nextSlide() {
+        goToSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        goToSlide(currentSlide - 1);
+    }
+
+    // Event Listeners
+    document.getElementById('next-btn').addEventListener('click', nextSlide);
+    document.getElementById('prev-btn').addEventListener('click', prevSlide);
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            prevSlide();
+        }
+    });
+
+    // Clock
+    function updateClock() {
+        const now = new Date();
+        const time = now.toTimeString().split(' ')[0];
+        document.getElementById('clock').textContent = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Poem Animation
+    function animatePoem() {
+        const lines = document.querySelectorAll('#poem-container .poem-line');
+        lines.forEach(line => {
+            line.classList.remove('visible');
+        });
+
+        lines.forEach((line, i) => {
+            const delay = parseInt(line.dataset.delay) || (i * 200);
+            setTimeout(() => {
+                line.classList.add('visible');
+            }, delay);
+        });
+    }
+
+    // Metric Animation
+    function animateMetrics() {
+        const energyEl = document.getElementById('metric-energy');
+        const trafficEl = document.getElementById('metric-traffic');
+
+        if (!energyEl || !trafficEl) return;
+
+        let energy = 0;
+        let traffic = 0;
+        const targetEnergy = 3;
+        const targetTraffic = 2.5;
+
+        const interval = setInterval(() => {
+            energy += 0.1;
+            traffic += 0.1;
+
+            energyEl.textContent = energy.toFixed(1);
+            trafficEl.textContent = traffic.toFixed(1);
+
+            if (energy >= targetEnergy && traffic >= targetTraffic) {
+                clearInterval(interval);
+                energyEl.textContent = targetEnergy.toFixed(1);
+                trafficEl.textContent = targetTraffic.toFixed(1);
+            }
+        }, 50);
+    }
+
+    // Live Chart
+    let chartInterval;
+    function startLiveChart() {
+        const canvas = document.getElementById('live-chart-1');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const data = Array(50).fill(0).map(() => Math.random() * 50 + 25);
+
+        if (chartInterval) clearInterval(chartInterval);
+
+        chartInterval = setInterval(() => {
+            data.shift();
+            data.push(Math.random() * 50 + 25);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.strokeStyle = '#00FF41';
+            ctx.lineWidth = 1;
+
+            data.forEach((val, i) => {
+                const x = (i / data.length) * canvas.width;
+                const y = canvas.height - (val / 100) * canvas.height;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+
+            ctx.stroke();
+
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(0, 255, 65, 0.1)';
+            ctx.fill();
+        }, 100);
+    }
+
+    // Floating Particles
+    function createParticles() {
+        const container = document.getElementById('particles');
+        const particleCount = 30;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            container.appendChild(particle);
+
+            animateParticle(particle);
+        }
+    }
+
+    function animateParticle(particle) {
+        const duration = Math.random() * 10000 + 5000;
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+
+        particle.style.transition = `all ${duration}ms linear`;
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+
+        setTimeout(() => animateParticle(particle), duration);
+    }
+
+    // Initialize
+    createParticles();
+    updateProgress();
+
+    // Mouse tracking glow effect
+    document.addEventListener('mousemove', (e) => {
+        const cards = document.querySelectorAll('.bento-card:hover');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(0,255,65,0.05) 0%, transparent 50%), var(--bg-panel)`;
+        });
+    });
+    </script>
+</body>
+</html>
