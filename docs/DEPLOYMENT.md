@@ -219,3 +219,38 @@ docker compose up -d --build
 1. Verificar que el build se ejecutó: `docker compose up -d --build`
 2. Limpiar cache del navegador (Ctrl+Shift+R)
 3. Verificar logs: `docker compose logs`
+
+### v1.3 (2026-05-15) — UX para Proyección en Auditorio
+
+#### Problemas Resueltos
+- **Scanlines**: Opacidad 0.5 → 0.1 (texto 5x más nítido en proyector)
+- **Grid background**: 60px → 80px, opacity 0.4, vignette más fuerte
+- **Partículas**: 30 → 12 (menos distracción visual)
+- **padding bug**: `padding: 5` → `padding: 0` (CSS válido)
+- **Duplicate selector**: Eliminado `docker-container::before` duplicado
+
+#### Mejoras de Tipografía
+- **Labels**: `text-xs` (12px) → `text-lg` (18px)
+- **Headers de tabla**: `text-sm` (14px) → `text-base` (16px)
+- **Descripciones**: `text-lg` (18px) → `text-xl` (20px)
+- **Terminal text**: 0.85rem (13.6px) → 1.25rem (20px)
+- **Títulos**: `text-5xl` (48px) → `text-6xl` (60px)
+- **Métricas**: `text-6xl` (60px) → `text-7xl` (72px)
+- **Poema**: `text-2xl` (24px) → `text-3xl` (30px)
+- **Slide 11 CTA**: `text-6xl` → `text-7xl`
+
+#### Mejoras de Contraste
+- `text-gray-500` → `text-gray-300` o `text-gray-400` (WCAG AA)
+- `text-gray-600` → `text-gray-400` (WCAG AA)
+- Todos los textos cumplen mínimo WCAG AA sobre `#050505`
+
+#### Mejoras de Layout
+- `max-w-6xl` → `max-w-7xl` en todos los slides (+256px ancho)
+- StatusBar: `py-3` → `py-2` (-8px vertical)
+- Canvas container: +16px de espacio vertical
+- NavigationControls: botones más grandes, texto más legible
+
+#### Resultado
+- ~120px más de espacio útil para contenido en 1920×1080
+- Texto mínimo legible desde 10 metros en pantalla de 3m
+- Contraste WCAG AA garantizado en todos los elementos

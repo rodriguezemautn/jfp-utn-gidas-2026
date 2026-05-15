@@ -341,3 +341,32 @@ Slide con video y poema animado:
 
 11. **Todos los slides en DOM** — Para presentaciones grandes (>20 slides), considerar lazy mounting
 12. **mousemove listener global** — Se ejecuta en cada movimiento de mouse; podría optimizarse con `requestAnimationFrame`
+
+## Guía de Legibilidad para Proyector
+
+### Problemas Comunes en Proyección
+
+1. **Scanlines/CRT effects**: Opacidad > 0.1 hace el texto ilegible desde el fondo
+2. **Grid backgrounds**: Tamaños < 80px generan ruido visual en proyector
+3. **Partículas**: Más de 12 se ven como manchas en la lente
+4. **Textos < 18px**: Invisibles desde 10 metros en pantalla de 3m
+5. **Colores grises oscuros**: `gray-500` y `gray-600` no pasan WCAG AA sobre fondo oscuro
+
+### Reglas para Nuevos Slides
+
+1. **Labels y metadata**: mínimo `text-lg` (18px)
+2. **Descripciones**: mínimo `text-xl` (20px)
+3. **Títulos**: `text-6xl` (60px)
+4. **Métricas**: `text-7xl` (72px)
+5. **Colores de texto**: usar `text-gray-300` o `text-gray-400` como mínimo
+6. **Ancho máximo**: usar `max-w-7xl` (no `max-w-6xl`)
+7. **Terminal text**: usar clase `.terminal-text` (20px)
+
+### Checklist de Legibilidad
+
+- [ ] ¿El texto más pequeño es al menos 18px (`text-lg`)?
+- [ ] ¿Los labels usan `text-gray-300` o más claro?
+- [ ] ¿El título del slide es `text-6xl`?
+- [ ] ¿El contenedor usa `max-w-7xl`?
+- [ ] ¿No hay scanlines con opacity > 0.1?
+- [ ] ¿No hay más de 12 partículas?

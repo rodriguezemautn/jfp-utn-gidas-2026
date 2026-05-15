@@ -8,7 +8,7 @@ export function Particles() {
     if (!container) return;
 
     const items: HTMLDivElement[] = [];
-    const count = 30;
+    const count = 12;
 
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');

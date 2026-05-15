@@ -1,9 +1,9 @@
 export function Slide03GreenOps() {
   return (
-    <div className="w-full max-w-6xl px-8">
+    <div className="w-full max-w-7xl px-8">
       <div className="mb-8">
-        <span className="font-mono text-xs text-accent-green">BLOQUE 02 // GREENOPS_PIPELINE</span>
-        <h2 className="font-sans text-5xl font-bold mt-2">Ciclo de Vida Sostenible</h2>
+        <span className="font-mono text-lg text-accent-green">BLOQUE 02 // GREENOPS_PIPELINE</span>
+        <h2 className="font-sans text-6xl font-bold mt-2">Ciclo de Vida Sostenible</h2>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
@@ -19,14 +19,14 @@ export function Slide03GreenOps() {
               ].map((stage, i) => (
                 <div key={stage.label} className="flex items-center gap-4 flex-1">
                   <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                    <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${
                       i === 0 || i === 4
                         ? 'bg-accent-green-dim border border-accent-green'
                         : 'bg-white/5 border border-white/20'
                     }`}>
-                      <span className={`font-mono text-xs ${i === 0 || i === 4 ? 'text-accent-green' : 'text-gray-400'}`}>{stage.label}</span>
+                      <span className={`font-mono text-base ${i === 0 || i === 4 ? 'text-accent-green' : 'text-gray-300'}`}>{stage.label}</span>
                     </div>
-                    <span className="font-mono text-base text-gray-500 mt-2">{stage.sub}</span>
+                    <span className="font-mono text-base text-gray-400 mt-2">{stage.sub}</span>
                   </div>
                   {i < 4 && (
                     <svg width="60" height="20" viewBox="0 0 60 20">
@@ -41,12 +41,12 @@ export function Slide03GreenOps() {
         </div>
 
         <div className="col-span-6 bento-card p-10">
-          <div className="font-mono text-sm text-gray-500 mb-6">SCI_FORMULA // Green Software Foundation v1.0</div>
+          <div className="font-mono text-lg text-gray-300 mb-6">SCI_FORMULA // Green Software Foundation v1.0</div>
           <div className="docker-container text-center py-8">
-            <div className="font-mono text-2xl text-accent-green">
+            <div className="font-mono text-3xl text-accent-green">
               SCI = (E x I) + M
             </div>
-            <div className="font-sans text-lg text-gray-400 mt-4">
+            <div className="font-sans text-xl text-gray-300 mt-4">
               por unidad funcional (request, usuario, transaccion)
             </div>
           </div>
@@ -57,8 +57,8 @@ export function Slide03GreenOps() {
               { label: 'M', desc: 'Emisiones' },
             ].map(m => (
               <div key={m.label} className="text-center">
-                <div className="font-mono text-lg text-accent-green">{m.label}</div>
-                <div className="font-mono text-base text-gray-500">{m.desc}</div>
+                <div className="font-mono text-xl text-accent-green">{m.label}</div>
+                <div className="font-mono text-base text-gray-400">{m.desc}</div>
               </div>
             ))}
           </div>
@@ -66,19 +66,19 @@ export function Slide03GreenOps() {
 
         <div className="col-span-6 flex flex-col gap-4">
           <div className="bento-card p-10 flex-1">
-            <div className="font-mono text-xs text-accent-green mb-3">CARBON_AWARE_SCHEDULING</div>
-            <p className="font-sans text-lg text-gray-300 mb-6">Mover cargas de trabajo a franjas horarias con menor intensidad de carbono en la red electrica</p>
+            <div className="font-mono text-lg text-accent-green mb-3">CARBON_AWARE_SCHEDULING</div>
+            <p className="font-sans text-xl text-gray-200 mb-6">Mover cargas de trabajo a franjas horarias con menor intensidad de carbono en la red electrica</p>
             <div className="flex items-center gap-3">
               <div className="h-2 flex-1 rounded-full bg-white/5 overflow-hidden">
                 <div className="h-full bg-gradient-to-r from-accent-green to-[#00cc33] w-3/4" />
               </div>
-              <span className="font-mono text-xs text-accent-green">SDGs compliant</span>
+              <span className="font-mono text-base text-accent-green">SDGs compliant</span>
             </div>
           </div>
 
           <div className="bento-card p-10 flex-1">
-            <div className="font-mono text-xs text-accent-green mb-3">PIPELINE_CARBON_GATE</div>
-            <p className="font-sans text-lg text-gray-300">El pipeline CI/CD rechaza deployments que superen el SCI threshold definido</p>
+            <div className="font-mono text-lg text-accent-green mb-3">PIPELINE_CARBON_GATE</div>
+            <p className="font-sans text-xl text-gray-200">El pipeline CI/CD rechaza deployments que superen el SCI threshold definido</p>
             <div className="mt-3 terminal-text">
               <div><span className="timestamp">[GATE]</span> <span className="cmd">if</span> sci_score &gt; threshold: <span className="success">reject()</span></div>
               <div><span className="timestamp">[GATE]</span> <span className="cmd">else</span>: <span className="success">approve()</span></div>

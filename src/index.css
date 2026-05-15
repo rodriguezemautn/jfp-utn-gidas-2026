@@ -17,7 +17,7 @@
 
 * {
   margin: 0;
-  padding: 5;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -38,18 +38,19 @@ body {
   background-image:
     linear-gradient(var(--color-grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-grid-line) 1px, transparent 1px);
-  background-size: 60px 60px;
+  background-size: 80px 80px;
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  opacity: 0.4;
 }
 
 .grid-bg::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, var(--color-bg-primary) 70%);
+  background: radial-gradient(ellipse at center, transparent 0%, var(--color-bg-primary) 55%);
 }
 
 .scanlines {
@@ -64,7 +65,7 @@ body {
   );
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.5;
+  opacity: 0.1;
 }
 
 .glow-green {
@@ -127,7 +128,7 @@ body {
 
 .terminal-text {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 1.25rem;
   color: var(--color-text-secondary);
   line-height: 1.8;
 }
@@ -178,20 +179,10 @@ body {
 .docker-container::before {
   content: '●';
   position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
-  color: var(--color-accent-green);
-  font-size: 0.65rem;
-  animation: pulse-glow 2s infinite;
-}
-
-.docker-container::before {
-  content: '●';
-  position: absolute;
   top: 0.5rem;
   right: 0.5rem;
   color: var(--color-accent-green);
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   animation: pulse-glow 2s infinite;
 }
 

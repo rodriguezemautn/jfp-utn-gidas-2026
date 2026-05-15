@@ -55,7 +55,7 @@ export default function App() {
 
       <StatusBar currentSlide={currentSlide} onNavClick={goToSlide} />
 
-      <div className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen" style={{ top: '60px', bottom: '64px' }}>
+      <div className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen" style={{ top: '48px', bottom: '56px' }}>
         <SlideLayer show={currentSlide === 0}><Slide00Intro /></SlideLayer>
         <SlideLayer show={currentSlide === 1}><Slide01Imperativo isActive={currentSlide === 1} /></SlideLayer>
         <SlideLayer show={currentSlide === 2}><Slide02VideoHook isActive={currentSlide === 2} /></SlideLayer>

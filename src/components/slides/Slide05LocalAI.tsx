@@ -1,9 +1,9 @@
 export function Slide05LocalAI() {
   return (
-    <div className="w-full max-w-6xl px-8">
+    <div className="w-full max-w-7xl px-8">
       <div className="mb-8">
-        <span className="font-mono text-xs text-accent-green">BLOQUE 04 // LOCAL_AI_STACK</span>
-        <h2 className="font-sans text-5xl font-bold mt-2">IA Local & Automatizacion</h2>
+        <span className="font-mono text-lg text-accent-green">BLOQUE 04 // LOCAL_AI_STACK</span>
+        <h2 className="font-sans text-6xl font-bold mt-2">IA Local & Automatizacion</h2>
       </div>
 
       <div className="grid grid-cols-12 gap-6">
@@ -17,18 +17,18 @@ export function Slide05LocalAI() {
             <div key={item.title} className="bento-card p-5">
               <div className="flex items-center gap-4 mb-3">
                 <div className="w-2 h-2 rounded-full bg-accent-green" />
-                <span className="font-mono text-sm text-gray-400">{item.title}</span>
+                <span className="font-mono text-base text-gray-300">{item.title}</span>
               </div>
               <div className="docker-container">
                 <div className="font-mono text-lg text-accent-green">{item.label}</div>
-                <div className="font-sans text-lg text-gray-400 mt-2">{item.desc}</div>
+                <div className="font-sans text-lg text-gray-300 mt-2">{item.desc}</div>
               </div>
             </div>
           ))}
         </div>
 
         <div className="col-span-4 bento-card p-10">
-          <div className="font-mono text-xs text-accent-green mb-6">MCP_STACK_2026</div>
+          <div className="font-mono text-lg text-accent-green mb-6">MCP_STACK_2026</div>
           <div className="space-y-4">
             {[
               { label: 'Agente IA (orquestador)', green: true },
@@ -38,7 +38,7 @@ export function Slide05LocalAI() {
             ].map((layer, i) => (
               <div key={layer.label}>
                 <div className={`docker-container text-center ${layer.green ? '' : 'border-white/20'}`}>
-                  <div className={`font-mono text-sm ${layer.green ? 'text-white' : 'text-gray-400'}`}>{layer.label}</div>
+                  <div className={`font-mono text-base ${layer.green ? 'text-white' : 'text-gray-300'}`}>{layer.label}</div>
                 </div>
                 {i < 3 && (
                   <div className="flex justify-center py-1">

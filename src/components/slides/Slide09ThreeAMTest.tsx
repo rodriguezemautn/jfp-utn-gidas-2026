@@ -1,15 +1,15 @@
 export function Slide09ThreeAMTest() {
   return (
-    <div className="w-full max-w-4xl px-8 text-center">
+    <div className="w-full max-w-5xl px-8 text-center">
       <div className="mb-8">
-        <span className="font-mono text-xs text-accent-green">EXPERIENCIA_EN_VIVO // 3:00_AM_TEST</span>
+        <span className="font-mono text-lg text-accent-green">EXPERIENCIA_EN_VIVO // 3:00_AM_TEST</span>
       </div>
 
-      <div className="bento-card p-12 max-w-2xl mx-auto">
+      <div className="bento-card p-12 max-w-3xl mx-auto">
         <div className="space-y-8">
           <div className="flex items-center justify-center gap-4">
             <div className="w-3 h-3 rounded-full bg-accent-green pulse-dot" />
-            <span className="font-mono text-xs text-accent-green">TEST_DE_EMPATIA</span>
+            <span className="font-mono text-base text-accent-green">TEST_DE_EMPATIA</span>
             <div className="w-3 h-3 rounded-full bg-accent-green pulse-dot" />
           </div>
 
@@ -20,14 +20,14 @@ export function Slide09ThreeAMTest() {
               { num: '3', text: 'Dos caminos: culpar al ultimo push o confiar en el proceso y seguir durmiendo.' },
             ].map(item => (
               <div key={item.num} className="flex gap-4">
-                <span className="font-mono text-2xl text-accent-green">{item.num}</span>
-                <p className="font-sans text-xl text-gray-300">{item.text}</p>
+                <span className="font-mono text-3xl text-accent-green">{item.num}</span>
+                <p className="font-sans text-2xl text-gray-200">{item.text}</p>
               </div>
             ))}
           </div>
 
           <div className="pt-6 border-t border-white/10">
-            <p className="font-sans text-2xl text-accent-green font-semibold">
+            <p className="font-sans text-3xl text-accent-green font-semibold">
               "En INFRAIT no apagamos incendios.<br />
               Disenamos sistemas que no se incendian."
             </p>
@@ -36,7 +36,7 @@ export function Slide09ThreeAMTest() {
       </div>
 
       <div className="mt-8">
-        <p className="font-sans text-2xl font-bold text-white">
+        <p className="font-sans text-3xl font-bold text-white">
           "Construyamos sistemas que cuiden a las personas."
         </p>
       </div>

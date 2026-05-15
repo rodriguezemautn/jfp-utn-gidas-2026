@@ -44,13 +44,13 @@ export function Slide02VideoHook({ isActive }: Slide02Props) {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl px-8">
+    <div className="w-full max-w-7xl px-8">
       <div className="mb-4">
-        <span className="font-mono text-xs text-accent-green">HOOK // NATTV_CRASH_DUMMY_PSA_80s</span>
-        <h2 className="font-sans text-3xl font-bold mt-2">El Paralelo del Crash Dummy</h2>
+        <span className="font-mono text-lg text-accent-green">HOOK // NATTV_CRASH_DUMMY_PSA_80s</span>
+        <h2 className="font-sans text-4xl font-bold mt-2">El Paralelo del Crash Dummy</h2>
       </div>
 
-      <div className="grid grid-cols-12 gap-6" style={{ maxHeight: 'calc(100vh - 140px)' }}>
+      <div className="grid grid-cols-12 gap-6" style={{ maxHeight: 'calc(100vh - 120px)' }}>
         <div className="col-span-7 flex flex-col gap-4">
           <div className="video-frame flex-1 relative">
             <video
@@ -83,7 +83,7 @@ export function Slide02VideoHook({ isActive }: Slide02Props) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="w-2 h-2 rounded-full bg-accent-green pulse-dot" />
-              <span className="font-mono text-base text-gray-500">NATTV · Crash Dummy PSA · 80s</span>
+              <span className="font-mono text-base text-gray-400">NATTV · Crash Dummy PSA · 80s</span>
             </div>
             <button onClick={replay} className="replay-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -97,31 +97,31 @@ export function Slide02VideoHook({ isActive }: Slide02Props) {
 
         <div className="col-span-5 flex flex-col justify-center">
           <div className="bento-card p-10 h-full flex flex-col justify-center active">
-            <div className="font-mono text-xs text-accent-green mb-6">MANIFESTO // SYSTEM_DESIGN_FAILURE</div>
+            <div className="font-mono text-lg text-accent-green mb-6">MANIFESTO // SYSTEM_DESIGN_FAILURE</div>
 
             <div ref={poemRef} className="space-y-6">
-              <div className="poem-line font-sans text-2xl text-gray-300" data-delay="0">
+              <div className="poem-line font-sans text-3xl text-gray-200" data-delay="0">
                 Durante decadas,
               </div>
-              <div className="poem-line font-sans text-2xl text-gray-300" data-delay="500">
+              <div className="poem-line font-sans text-3xl text-gray-200" data-delay="500">
                 disenamos software
               </div>
-              <div className="poem-line font-sans text-2xl text-gray-300" data-delay="1000">
+              <div className="poem-line font-sans text-3xl text-gray-200" data-delay="1000">
                 como los ingenieros
               </div>
-              <div className="poem-line font-sans text-2xl text-gray-300" data-delay="1500">
+              <div className="poem-line font-sans text-3xl text-gray-200" data-delay="1500">
                 automotrices de los 80s:
               </div>
-              <div className="poem-line font-sans text-2xl text-accent-green font-semibold mt-4" data-delay="2500">
+              <div className="poem-line font-sans text-3xl text-accent-green font-semibold mt-4" data-delay="2500">
                 Elegante en el laboratorio.
               </div>
-              <div className="poem-line font-sans text-2xl text-accent-green font-semibold" data-delay="3000">
+              <div className="poem-line font-sans text-3xl text-accent-green font-semibold" data-delay="3000">
                 Catastrofico al chocar con la realidad.
               </div>
-              <div className="poem-line font-sans text-2xl text-gray-400 italic mt-6" data-delay="4500">
+              <div className="poem-line font-sans text-3xl text-gray-300 italic mt-6" data-delay="4500">
                 "No necesitamos heroes que no duermen.
               </div>
-              <div className="poem-line font-sans text-2xl text-gray-400 italic" data-delay="5000">
+              <div className="poem-line font-sans text-3xl text-gray-300 italic" data-delay="5000">
                 Necesitamos sistemas disenados para sobrevivir."
               </div>
             </div>
