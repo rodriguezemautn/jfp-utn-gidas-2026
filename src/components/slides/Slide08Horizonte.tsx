@@ -7,13 +7,13 @@ export function Slide08Horizonte() {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-6 bento-card p-10">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="col-span-6 bento-card p-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-2 rounded-full bg-accent-green pulse-dot" />
             <span className="font-mono text-base text-accent-green">PLATFORM_ENGINEERING</span>
           </div>
           <h3 className="font-sans text-3xl font-semibold mb-3">Golden Paths + IDP</h3>
-          <p className="font-sans text-xl text-gray-300 mb-6">Los devs crean valor, no pelean con infra. Gartner: 80% de orgs con IDP para 2026.</p>
+          <p className="font-sans text-xl text-gray-300 mb-4">Los devs crean valor, no pelean con infra. Gartner: 80% de orgs con IDP para 2026.</p>
           <div className="docker-container">
             <div className="font-mono text-base text-gray-300">Internal Developer Platform</div>
             <div className="mt-2 flex gap-3">
@@ -23,26 +23,26 @@ export function Slide08Horizonte() {
           </div>
         </div>
 
-        <div className="col-span-6 bento-card p-10">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="col-span-6 bento-card p-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-2 rounded-full bg-accent-green pulse-dot" />
             <span className="font-mono text-base text-accent-green">AI_NATIVE_DEVOPS</span>
           </div>
           <h3 className="font-sans text-3xl font-semibold mb-3">Agentes Co-pilota CI/CD</h3>
-          <p className="font-sans text-xl text-gray-300 mb-6">Desde PR hasta incident response. State of DevOps 2025: -40% MTTR con AI-assisted ops.</p>
+          <p className="font-sans text-xl text-gray-300 mb-4">Desde PR hasta incident response. State of DevOps 2025: -40% MTTR con AI-assisted ops.</p>
           <div className="docker-container">
             <div className="font-mono text-base text-gray-300">AI-Assisted Operations</div>
             <div className="mt-2 font-mono text-base text-accent-green">MTTR: -40% | Deployments: +4x</div>
           </div>
         </div>
 
-        <div className="col-span-6 bento-card p-10">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="col-span-6 bento-card p-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-2 rounded-full bg-accent-green pulse-dot" />
             <span className="font-mono text-base text-accent-green">FINOPS_GREENOPS</span>
           </div>
           <h3 className="font-sans text-3xl font-semibold mb-3">Convergencia Total</h3>
-          <p className="font-sans text-xl text-gray-300 mb-6">Un solo dashboard de costo + carbono. El costo ya no es solo dinero; es energia, es toneladas de CO2.</p>
+          <p className="font-sans text-xl text-gray-300 mb-4">Un solo dashboard de costo + carbono. El costo ya no es solo dinero; es energia, es toneladas de CO2.</p>
           <div className="flex gap-3">
             <div className="flex-1 h-8 rounded bg-gradient-to-r from-accent-green/20 to-accent-green/5 border border-accent-green/30 flex items-center justify-center">
               <span className="font-mono text-base text-accent-green">$ COSTO</span>
@@ -53,20 +53,20 @@ export function Slide08Horizonte() {
           </div>
         </div>
 
-        <div className="col-span-6 bento-card p-10">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="col-span-6 bento-card p-8">
+          <div className="flex items-center gap-4 mb-4">
             <div className="w-2 h-2 rounded-full bg-accent-green pulse-dot" />
             <span className="font-mono text-base text-accent-green">MCP_2026</span>
           </div>
           <h3 className="font-sans text-3xl font-semibold mb-3">Infra as Prompt</h3>
-          <p className="font-sans text-xl text-gray-300 mb-6">Model Context Protocol (Anthropic, 2024). Agentes orquestan K8s, Terraform, observabilidad con guardrails humanos.</p>
+          <p className="font-sans text-xl text-gray-300 mb-4">Model Context Protocol (Anthropic, 2024). Agentes orquestan K8s, Terraform, observabilidad con guardrails humanos.</p>
           <div className="docker-container font-mono text-base text-accent-green">
             &gt; deploy --cluster=prod --carbon-aware=true
           </div>
         </div>
 
-        <div className="col-span-12 bento-card p-10">
-          <div className="font-mono text-lg text-gray-300 mb-6">DORA_2025_METRICS // ELITE_PERFORMERS</div>
+        <div className="col-span-12 bento-card p-8">
+          <div className="font-mono text-lg text-gray-300 mb-4">DORA_2025_METRICS // ELITE_PERFORMERS</div>
           <div className="grid grid-cols-4 gap-6">
             {[
               { value: '4x', label: 'mas despliegues', sub: 'elite vs low' },

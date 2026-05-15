@@ -7,36 +7,34 @@ export function Slide03GreenOps() {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-12 bento-card p-10 mb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 flex-1">
-              {[
-                { label: 'CODE', sub: 'Lines scanned' },
-                { label: 'BUILD', sub: 'Energy/build' },
-                { label: 'TEST', sub: 'Carbon/test' },
-                { label: 'DEPLOY', sub: 'SCI score' },
-                { label: 'RUN', sub: 'Carbon/req' },
-              ].map((stage, i) => (
-                <div key={stage.label} className="flex items-center gap-4 flex-1">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${
-                      i === 0 || i === 4
-                        ? 'bg-accent-green-dim border border-accent-green'
-                        : 'bg-white/5 border border-white/20'
-                    }`}>
-                      <span className={`font-mono text-base ${i === 0 || i === 4 ? 'text-accent-green' : 'text-gray-300'}`}>{stage.label}</span>
-                    </div>
-                    <span className="font-mono text-base text-gray-400 mt-2">{stage.sub}</span>
+        <div className="col-span-12 bento-card p-8 mb-4">
+          <div className="flex items-center justify-center gap-2">
+            {[
+              { label: 'CODE', sub: 'Lines scanned' },
+              { label: 'BUILD', sub: 'Energy/build' },
+              { label: 'TEST', sub: 'Carbon/test' },
+              { label: 'DEPLOY', sub: 'SCI score' },
+              { label: 'RUN', sub: 'Carbon/req' },
+            ].map((stage, i) => (
+              <div key={stage.label} className="flex items-center gap-2">
+                <div className="flex flex-col items-center">
+                  <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${
+                    i === 0 || i === 4
+                      ? 'bg-accent-green-dim border border-accent-green'
+                      : 'bg-white/5 border border-white/20'
+                  }`}>
+                    <span className={`font-mono text-base ${i === 0 || i === 4 ? 'text-accent-green' : 'text-gray-300'}`}>{stage.label}</span>
                   </div>
-                  {i < 4 && (
-                    <svg width="60" height="20" viewBox="0 0 60 20">
-                      <line x1="0" y1="10" x2="50" y2="10" stroke="#00FF41" strokeWidth="1" opacity="0.5" />
-                      <polygon points="50,10 45,5 45,15" fill="#00FF41" opacity="0.5" />
-                    </svg>
-                  )}
+                  <span className="font-mono text-sm text-gray-400 mt-2">{stage.sub}</span>
                 </div>
-              ))}
-            </div>
+                {i < 4 && (
+                  <svg width="40" height="20" viewBox="0 0 40 20">
+                    <line x1="0" y1="10" x2="32" y2="10" stroke="#00FF41" strokeWidth="1" opacity="0.5" />
+                    <polygon points="32,10 27,5 27,15" fill="#00FF41" opacity="0.5" />
+                  </svg>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 

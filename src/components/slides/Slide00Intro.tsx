@@ -2,7 +2,7 @@ export function Slide00Intro() {
   return (
     <div className="w-full max-w-7xl px-8">
       <div className="grid grid-cols-12 gap-6" style={{ maxHeight: 'calc(100vh - 120px)' }}>
-        <div className="col-span-7 bento-card p-10 flex flex-col justify-between active">
+        <div className="col-span-7 bento-card p-8 flex flex-col justify-between active">
           <div>
             <div className="flex items-center gap-4 mb-6">
               <div className="w-3 h-3 rounded-full bg-accent-green pulse-dot" />

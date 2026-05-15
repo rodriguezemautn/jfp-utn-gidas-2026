@@ -7,15 +7,15 @@ export function Slide06SRE() {
       </div>
 
       <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-8 bento-card p-10">
-          <div className="font-mono text-lg text-gray-300 mb-6">METRIC_COMPARISON_TABLE</div>
-          <div className="overflow-hidden">
+        <div className="col-span-8 bento-card p-8">
+          <div className="font-mono text-lg text-gray-300 mb-4">METRIC_COMPARISON_TABLE</div>
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="text-left py-3 font-mono text-base text-gray-300">METRICA SRE</th>
-                  <th className="text-left py-3 font-mono text-base text-gray-400">SLO TRADICIONAL</th>
-                  <th className="text-left py-3 font-mono text-base text-accent-green">SLO SOSTENIBILIDAD 2026</th>
+                  <th className="text-left py-3 px-2 font-mono text-base text-gray-300">METRICA SRE</th>
+                  <th className="text-left py-3 px-2 font-mono text-base text-gray-400">SLO TRADICIONAL</th>
+                  <th className="text-left py-3 px-2 font-mono text-base text-accent-green">SLO SOSTENIBILIDAD 2026</th>
                 </tr>
               </thead>
               <tbody className="font-mono text-lg">
@@ -27,9 +27,9 @@ export function Slide06SRE() {
                   { metric: 'Error Budget', trad: 'Tiempo permitido de falla', green: 'Budget dual: falla + carbon overage' },
                 ].map((row, i) => (
                   <tr key={row.metric} className={i < 4 ? 'border-b border-white/5' : ''}>
-                    <td className="py-4 text-gray-200">{row.metric}</td>
-                    <td className="py-4 text-gray-400">{row.trad}</td>
-                    <td className="py-4 text-accent-green">{row.green}</td>
+                    <td className="py-3 px-2 text-gray-200">{row.metric}</td>
+                    <td className="py-3 px-2 text-gray-400">{row.trad}</td>
+                    <td className="py-3 px-2 text-accent-green">{row.green}</td>
                   </tr>
                 ))}
               </tbody>
