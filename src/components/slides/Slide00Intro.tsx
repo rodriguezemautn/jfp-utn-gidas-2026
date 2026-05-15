@@ -1,4 +1,33 @@
+import { useState, useEffect } from 'react';
+
 export function Slide00Intro() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const delays = [
+      { step: 1, delay: 800 },    // init_presentation
+      { step: 2, delay: 1200 },   // loading_modules
+      { step: 3, delay: 800 },    // agenda 01
+      { step: 4, delay: 800 },    // agenda 02
+      { step: 5, delay: 800 },    // agenda 03
+      { step: 6, delay: 800 },    // agenda 04
+      { step: 7, delay: 800 },    // agenda 05
+      { step: 8, delay: 1000 },   // ok connection_established
+      { step: 9, delay: 800 },    // gmet first quote
+      { step: 10, delay: 5000 },  // devops quote (5s gap)
+      { step: 11, delay: 1200 },  // whoami
+      { step: 12, delay: 1000 },  // groups
+    ];
+
+    let elapsed = 0;
+    const timers = delays.map(({ step: s, delay }) => {
+      elapsed += delay;
+      return setTimeout(() => setStep(s), elapsed);
+    });
+
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
   return (
     <div className="w-full max-w-7xl px-8">
       <div className="grid grid-cols-12 gap-6" style={{ maxHeight: 'calc(100vh - 120px)' }}>
@@ -13,23 +42,42 @@ export function Slide00Intro() {
               para el Desarrollo<br />
               <span className="text-gray-300">Sostenible</span>
             </h1>
-            <p className="font-mono text-lg text-gray-400 mt-2">
+            <p className="font-mono text-lg text-gray-400 mt-4">
               Cultura · GreenOps · Arquitecturas de Bajo Impacto · IA Local · SRE Evolucionado
             </p>
           </div>
 
           <div className="mt-6 pt-4 border-t border-white/10">
-            <div className="flex items-end justify-between">
-              <div className="terminal-text space-y-1">
-                <div><span className="timestamp">[10:58:14]</span> <span className="cmd">$</span> init_presentation --mode=sustainable</div>
-                <div><span className="timestamp">[10:58:15]</span> <span className="cmd">$</span> loading_modules: green_ops, carbon_aware, sre_v2</div>
-                <div><span className="timestamp">[10:58:16]</span> <span className="success">ok</span> connection_established: GMET_EMPATHY_PROTOCOL</div>
-                <div><span className="timestamp">[10:58:17]</span> <span className="cmd">$</span> whoami Emanuel Rodriguez</div>
+            <div className="terminal-text space-y-1">
+              <div className={`transition-opacity duration-700 ${step >= 1 ? 'opacity-100' : 'opacity-0'}`}>
+                <span className="timestamp">[JFP-FRLP]</span> <span className="cmd">$</span> init_presentation --mode=sustainable
               </div>
-              <div className="text-right ml-6">
-                <div className="font-mono text-sm text-gray-400">Grupo GiDAS</div>
-                <div className="font-sans text-2xl font-semibold text-white">INFRAIT</div>
-                <div className="font-mono text-sm text-accent-green">UTN FRLP</div>
+              <div className={`transition-opacity duration-700 ${step >= 2 ? 'opacity-100' : 'opacity-0'}`}>
+                <span className="timestamp">[JFP-FRLP]</span> <span className="cmd">$</span> loading_modules: green_ops, carbon_aware, sre_v2
+              </div>
+              <div className={`transition-opacity duration-700 ${step >= 8 ? 'opacity-100' : 'opacity-0'}`}>
+                <span className="timestamp">[JFP-FRLP]</span> <span className="success">ok</span> connection_established: GMET_EMPATHY_PROTOCOL
+              </div>
+              <div className={`transition-opacity duration-700 ${step >= 11 ? 'opacity-100' : 'opacity-0'}`}>
+                <span className="timestamp">[JFP-FRLP]</span> <span className="cmd">$</span> whoami Emanuel Rodriguez
+              </div>
+              <div className={`transition-opacity duration-700 ${step >= 12 ? 'opacity-100' : 'opacity-0'}`}>
+                <span className="timestamp">[JFP-FRLP]</span> <span className="cmd">$</span> groups
+              </div>
+              <div className={`transition-opacity duration-700 ${step >= 12 ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="flex items-center gap-4 mt-1">
+                  <div className="flex items-center gap-2">
+                    <img src="/assets/logo-gidas.png" className="h-5 opacity-80" alt="GiDAS" />
+                    <span className="font-sans text-base font-bold text-white">Grupo GiDAS</span>
+                  </div>
+                  <span className="text-gray-600">|</span>
+                  <span className="font-sans text-base font-semibold text-accent-green">INFRAIT</span>
+                  <span className="text-gray-600">|</span>
+                  <div className="flex items-center gap-2">
+                    <img src="/assets/logo-utn.png" className="h-5 opacity-80" alt="UTN" />
+                    <span className="font-mono text-base text-gray-300">UTN FRLP</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -37,24 +85,24 @@ export function Slide00Intro() {
 
         <div className="col-span-5 flex flex-col gap-4">
           <div className="bento-card p-8 flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <span className="font-mono text-base text-gray-400">GMET_BRIDGE</span>
+            <div className={`flex items-center justify-between mb-4 transition-opacity duration-700 ${step >= 9 ? 'opacity-100' : 'opacity-0'}`}>
+              <span className="font-mono text-lg text-gray-300">GMET_BRIDGE</span>
               <div className="w-2 h-2 rounded-full bg-accent-green" />
             </div>
             <div className="space-y-4">
-              <div className="docker-container">
-                <div className="font-mono text-sm text-gray-300 mb-1">GMET - Diseno Inclusivo</div>
-                <p className="font-sans text-lg text-gray-200 italic">"Un mundo donde los crash dummies no representan a la mujer, es un mundo incompleto."</p>
+              <div className={`docker-container transition-all duration-700 ${step >= 9 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                <div className="font-mono text-base text-gray-300 mb-1">GMET - Diseno Inclusivo</div>
+                <p className="font-sans text-xl text-gray-200 italic">"Un mundo donde los crash dummies no representan a la mujer, es un mundo incompleto."</p>
               </div>
-              <div className="flex items-center justify-center">
+              <div className={`flex items-center justify-center transition-opacity duration-700 ${step >= 9 ? 'opacity-100' : 'opacity-0'}`}>
                 <svg width="32" height="32" viewBox="0 0 40 40">
                   <line x1="20" y1="0" x2="20" y2="40" stroke="#00FF41" strokeWidth="1" opacity="0.5" />
                   <polygon points="20,35 15,25 25,25" fill="#00FF41" opacity="0.8" />
                 </svg>
               </div>
-              <div className="docker-container">
-                <div className="font-mono text-sm text-accent-green mb-1">DevOps - Ingenieria Sostenible</div>
-                <p className="font-sans text-lg text-gray-200">"La misma empatia radical aplicada a la operacion: para el negocio, el planeta y las personas."</p>
+              <div className={`docker-container transition-all duration-700 ${step >= 10 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                <div className="font-mono text-base text-accent-green mb-1">DevOps - Ingenieria Sostenible</div>
+                <p className="font-sans text-xl text-gray-200">"La misma empatia radical aplicada a la operacion: para el negocio, el planeta y las personas."</p>
               </div>
             </div>
           </div>
@@ -68,10 +116,12 @@ export function Slide00Intro() {
               {[1, 2, 3, 4, 5].map(n => (
                 <div
                   key={n}
-                  className={`h-10 rounded flex items-center justify-center font-mono text-base ${
-                    n === 1
-                      ? 'bg-accent-green-dim border border-accent-green/30 text-accent-green'
-                      : 'bg-white/5 border border-white/10 text-gray-400'
+                  className={`h-10 rounded flex items-center justify-center font-mono text-base transition-all duration-500 ${
+                    step >= 2 + n
+                      ? n === 1
+                        ? 'bg-accent-green-dim border border-accent-green/30 text-accent-green'
+                        : 'bg-white/5 border border-white/10 text-gray-400'
+                      : 'bg-white/5 border border-transparent text-transparent'
                   }`}
                 >
                   {String(n).padStart(2, '0')}
