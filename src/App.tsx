@@ -59,7 +59,7 @@ export default function App() {
         <SlideLayer show={currentSlide === 0}><Slide00Intro /></SlideLayer>
         <SlideLayer show={currentSlide === 1}><Slide01Imperativo isActive={currentSlide === 1} /></SlideLayer>
         <SlideLayer show={currentSlide === 2}><Slide02VideoHook isActive={currentSlide === 2} /></SlideLayer>
-        <SlideLayer show={currentSlide === 3}><Slide03GreenOps /></SlideLayer>
+        <SlideLayer show={currentSlide === 3}><Slide03GreenOps isActive={currentSlide === 3} /></SlideLayer>
         <SlideLayer show={currentSlide === 4}><Slide04LowImpactArch /></SlideLayer>
         <SlideLayer show={currentSlide === 5}><Slide05LocalAI /></SlideLayer>
         <SlideLayer show={currentSlide === 6}><Slide06SRE /></SlideLayer>
