@@ -5,16 +5,17 @@ import { NavigationControls } from './components/NavigationControls';
 import { Particles } from './components/Particles';
 import { Slide00Intro } from './components/slides/Slide00Intro';
 import { Slide01Imperativo } from './components/slides/Slide01Imperativo';
-import { Slide02VideoHook } from './components/slides/Slide02VideoHook';
-import { Slide03GreenOps } from './components/slides/Slide03GreenOps';
-import { Slide04LowImpactArch } from './components/slides/Slide04LowImpactArch';
-import { Slide05LocalAI } from './components/slides/Slide05LocalAI';
-import { Slide06SRE } from './components/slides/Slide06SRE';
-import { Slide07Sintesis } from './components/slides/Slide07Sintesis';
-import { Slide08Horizonte } from './components/slides/Slide08Horizonte';
-import { Slide09ThreeAMTest } from './components/slides/Slide09ThreeAMTest';
-import { Slide10Cierre } from './components/slides/Slide10Cierre';
-import { Slide11Gracias } from './components/slides/Slide11Gracias';
+import { Slide02IntroDevOps } from './components/slides/Slide02IntroDevOps';
+import { Slide03VideoHook } from './components/slides/Slide03VideoHook';
+import { Slide04GreenOps } from './components/slides/Slide04GreenOps';
+import { Slide05LowImpactArch } from './components/slides/Slide05LowImpactArch';
+import { Slide06LocalAI } from './components/slides/Slide06LocalAI';
+import { Slide07SRE } from './components/slides/Slide07SRE';
+import { Slide08Sintesis } from './components/slides/Slide08Sintesis';
+import { Slide09Horizonte } from './components/slides/Slide09Horizonte';
+import { Slide10ThreeAMTest } from './components/slides/Slide10ThreeAMTest';
+import { Slide11Cierre } from './components/slides/Slide11Cierre';
+import { Slide12Gracias } from './components/slides/Slide12Gracias';
 
 function SlideLayer({ show, children }: { show: boolean; children: React.ReactNode }) {
   return (
@@ -57,17 +58,18 @@ export default function App() {
 
       <div className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen" style={{ top: '48px', bottom: '56px' }}>
         <SlideLayer show={currentSlide === 0}><Slide00Intro /></SlideLayer>
-        <SlideLayer show={currentSlide === 1}><Slide01Imperativo isActive={currentSlide === 1} /></SlideLayer>
-        <SlideLayer show={currentSlide === 2}><Slide02VideoHook isActive={currentSlide === 2} /></SlideLayer>
-        <SlideLayer show={currentSlide === 3}><Slide03GreenOps isActive={currentSlide === 3} /></SlideLayer>
-        <SlideLayer show={currentSlide === 4}><Slide04LowImpactArch /></SlideLayer>
-        <SlideLayer show={currentSlide === 5}><Slide05LocalAI /></SlideLayer>
-        <SlideLayer show={currentSlide === 6}><Slide06SRE /></SlideLayer>
-        <SlideLayer show={currentSlide === 7}><Slide07Sintesis /></SlideLayer>
-        <SlideLayer show={currentSlide === 8}><Slide08Horizonte /></SlideLayer>
-        <SlideLayer show={currentSlide === 9}><Slide09ThreeAMTest /></SlideLayer>
-        <SlideLayer show={currentSlide === 10}><Slide10Cierre /></SlideLayer>
-        <SlideLayer show={currentSlide === 11}><Slide11Gracias /></SlideLayer>
+        <SlideLayer show={currentSlide === 1}><Slide02IntroDevOps /></SlideLayer>
+        <SlideLayer show={currentSlide === 2}><Slide01Imperativo isActive={currentSlide === 2} /></SlideLayer>
+        <SlideLayer show={currentSlide === 3}><Slide03VideoHook isActive={currentSlide === 3} /></SlideLayer>
+        <SlideLayer show={currentSlide === 4}><Slide04GreenOps isActive={currentSlide === 4} /></SlideLayer>
+        <SlideLayer show={currentSlide === 5}><Slide05LowImpactArch /></SlideLayer>
+        <SlideLayer show={currentSlide === 6}><Slide06LocalAI /></SlideLayer>
+        <SlideLayer show={currentSlide === 7}><Slide07SRE /></SlideLayer>
+        <SlideLayer show={currentSlide === 8}><Slide08Sintesis /></SlideLayer>
+        <SlideLayer show={currentSlide === 9}><Slide09Horizonte /></SlideLayer>
+        <SlideLayer show={currentSlide === 10}><Slide10ThreeAMTest /></SlideLayer>
+        <SlideLayer show={currentSlide === 11}><Slide11Cierre /></SlideLayer>
+        <SlideLayer show={currentSlide === 12}><Slide12Gracias /></SlideLayer>
       </div>
 
       <NavigationControls currentSlide={currentSlide} onPrev={prevSlide} onNext={nextSlide} />
