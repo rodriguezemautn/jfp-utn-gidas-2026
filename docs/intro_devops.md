@@ -15,7 +15,7 @@ El flujo de trabajo se visualiza como una **cadena de valor continua** que defin
 **Referencia** 
 **DevOps Lens of SDLC
 (Tushar Murudkar
-Jan 16, 2024)**
+Jan 16, 2024)M**
 https://medium.com/@tusharmurudkar/devops-lens-of-sdlc-c5939969743e
 
 ## 3. SRE: Ingeniería de Confiabilidad de Sitios

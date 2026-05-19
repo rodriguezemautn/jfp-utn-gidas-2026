@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { LiveChart } from '../LiveChart';
+import { Mascot } from '../Mascot';
 
 interface Slide01Props {
   isActive: boolean;
@@ -99,6 +100,11 @@ export function Slide01Imperativo({ isActive }: Slide01Props) {
           </div>
         </div>
       </div>
+      <Mascot
+        src="https://media.licdn.com/dms/image/v2/C4D12AQFtt7xNauRBcQ/article-inline_image-shrink_1000_1488/article-inline_image-shrink_1000_1488/0/1609093564168?e=1780531200&v=beta&t=X2ZslXJfwtkAmH-RNM_1U9vSHyYpgCfzUvfEDlXgGeI"
+        alt="Server planet"
+        className="w-72 h-72"
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Mascot } from '../Mascot';
 
 interface Slide04Props {
   isActive: boolean;
@@ -137,6 +138,7 @@ export function Slide04GreenOps({ isActive }: Slide04Props) {
           </div>
         </div>
       </div>
+      <Mascot />
     </div>
   );
 }

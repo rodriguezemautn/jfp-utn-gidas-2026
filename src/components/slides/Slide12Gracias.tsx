@@ -1,3 +1,5 @@
+import { Mascot } from '../Mascot';
+
 export function Slide12Gracias() {
   return (
     <div className="w-full max-w-5xl px-8 flex flex-col items-center justify-center gap-12">
@@ -30,6 +32,7 @@ export function Slide12Gracias() {
           gidas@frlp.utn.edu.ar
         </a>
       </div>
+      <Mascot />
     </div>
   );
 }

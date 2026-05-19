@@ -1,3 +1,5 @@
+import { Mascot } from '../Mascot';
+
 export function Slide10ThreeAMTest() {
   return (
     <div className="w-full max-w-5xl px-8 text-center">
@@ -40,6 +42,7 @@ export function Slide10ThreeAMTest() {
           "Construyamos sistemas que cuiden a las personas."
         </p>
       </div>
+      <Mascot />
     </div>
   );
 }

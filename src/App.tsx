@@ -6,6 +6,7 @@ import { Particles } from './components/Particles';
 import { Slide00Intro } from './components/slides/Slide00Intro';
 import { Slide01Imperativo } from './components/slides/Slide01Imperativo';
 import { Slide02IntroDevOps } from './components/slides/Slide02IntroDevOps';
+import { SlideDevOpsFull } from './components/slides/SlideDevOpsFull';
 import { Slide03VideoHook } from './components/slides/Slide03VideoHook';
 import { Slide04GreenOps } from './components/slides/Slide04GreenOps';
 import { Slide05LowImpactArch } from './components/slides/Slide05LowImpactArch';
@@ -59,17 +60,18 @@ export default function App() {
       <div className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen" style={{ top: '48px', bottom: '56px' }}>
         <SlideLayer show={currentSlide === 0}><Slide00Intro /></SlideLayer>
         <SlideLayer show={currentSlide === 1}><Slide02IntroDevOps /></SlideLayer>
-        <SlideLayer show={currentSlide === 2}><Slide01Imperativo isActive={currentSlide === 2} /></SlideLayer>
-        <SlideLayer show={currentSlide === 3}><Slide03VideoHook isActive={currentSlide === 3} /></SlideLayer>
-        <SlideLayer show={currentSlide === 4}><Slide04GreenOps isActive={currentSlide === 4} /></SlideLayer>
-        <SlideLayer show={currentSlide === 5}><Slide05LowImpactArch /></SlideLayer>
-        <SlideLayer show={currentSlide === 6}><Slide06LocalAI /></SlideLayer>
-        <SlideLayer show={currentSlide === 7}><Slide07SRE /></SlideLayer>
-        <SlideLayer show={currentSlide === 8}><Slide08Sintesis /></SlideLayer>
-        <SlideLayer show={currentSlide === 9}><Slide09Horizonte /></SlideLayer>
-        <SlideLayer show={currentSlide === 10}><Slide10ThreeAMTest /></SlideLayer>
-        <SlideLayer show={currentSlide === 11}><Slide11Cierre /></SlideLayer>
-        <SlideLayer show={currentSlide === 12}><Slide12Gracias /></SlideLayer>
+        <SlideLayer show={currentSlide === 2}><SlideDevOpsFull /></SlideLayer>
+        <SlideLayer show={currentSlide === 3}><Slide01Imperativo isActive={currentSlide === 3} /></SlideLayer>
+        <SlideLayer show={currentSlide === 4}><Slide03VideoHook isActive={currentSlide === 4} /></SlideLayer>
+        <SlideLayer show={currentSlide === 5}><Slide04GreenOps isActive={currentSlide === 5} /></SlideLayer>
+        <SlideLayer show={currentSlide === 6}><Slide05LowImpactArch /></SlideLayer>
+        <SlideLayer show={currentSlide === 7}><Slide06LocalAI /></SlideLayer>
+        <SlideLayer show={currentSlide === 8}><Slide07SRE /></SlideLayer>
+        <SlideLayer show={currentSlide === 9}><Slide08Sintesis /></SlideLayer>
+        <SlideLayer show={currentSlide === 10}><Slide09Horizonte /></SlideLayer>
+        <SlideLayer show={currentSlide === 11}><Slide10ThreeAMTest /></SlideLayer>
+        <SlideLayer show={currentSlide === 12}><Slide11Cierre /></SlideLayer>
+        <SlideLayer show={currentSlide === 13}><Slide12Gracias /></SlideLayer>
       </div>
 
       <NavigationControls currentSlide={currentSlide} onPrev={prevSlide} onNext={nextSlide} />

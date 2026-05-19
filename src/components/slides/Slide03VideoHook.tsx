@@ -135,6 +135,23 @@ export function Slide03VideoHook({ isActive }: Slide03Props) {
           </div>
         </div>
       </div>
+      {/* Side mascots */}
+      <div className="fixed bottom-24 left-8 z-30 pointer-events-none select-none mascot-float">
+        <img
+          src="https://media.licdn.com/dms/image/v2/C4D12AQHRb3IvW6E9Jg/article-inline_image-shrink_400_744/article-inline_image-shrink_400_744/0/1609097464209?e=1780531200&v=beta&t=nR7oK1Q7Q43wBYC2FPwvTDzOg3L4CnJQAH_FB72NnnE"
+          alt="Crash left"
+          className="w-36 h-36 object-contain rounded-lg"
+          style={{ filter: 'drop-shadow(0 0 8px rgba(0,255,65,0.3))' }}
+        />
+      </div>
+      <div className="fixed bottom-24 right-8 z-30 pointer-events-none select-none mascot-float">
+        <img
+          src="https://media.licdn.com/dms/image/v2/C4D12AQEN32eZhqV5Ng/article-inline_image-shrink_1000_1488/article-inline_image-shrink_1000_1488/0/1609097493837?e=1780531200&v=beta&t=ktKCFMap0UOS7A17FngAa3VHh6kIB4EDBqzg0gJ1LTU"
+          alt="Crash right"
+          className="w-36 h-36 object-contain rounded-lg"
+          style={{ filter: 'drop-shadow(0 0 8px rgba(0,255,65,0.3))' }}
+        />
+      </div>
     </div>
   );
 }
