@@ -44,6 +44,15 @@ export function Slide11Cierre() {
           <div className="font-sans text-5xl font-semibold text-accent-green">GiDAS - Grupo de Investigacion en Desarrollo de Arquitecturas Sostenibles - UTN FRLP</div>
           <div className="font-mono text-3xl text-gray-400 mt-4">Sumate al grupo - Construi el futuro digital de Argentina</div>
         </div>
+        <div className="mt-8 pt-8 border-t border-white/5">
+          <div className="font-mono text-sm text-gray-500 mb-2">CREDITOS DE IMAGENES</div>
+          <div className="font-mono text-sm text-gray-500 space-y-0.5 leading-relaxed">
+            <div>Mascota principal: Dancing Gopher &mdash; media.tenor.com</div>
+            <div>Mascota gato bailando &mdash; media.giphy.com (begSgSG5lCl8bxkBiv)</div>
+            <div>Ilustraciones de LinkedIn &mdash; articulos de Tushar Murudkar sobre DevOps y SRE</div>
+            <div>Logos GiDAS y UTN &mdash; propiedad de sus respectivas instituciones</div>
+          </div>
+        </div>
       </div>
       <Mascot />
     </div>

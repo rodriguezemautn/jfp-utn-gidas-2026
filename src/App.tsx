@@ -66,12 +66,12 @@ export default function App() {
         <SlideLayer show={currentSlide === 5}><Slide04GreenOps isActive={currentSlide === 5} /></SlideLayer>
         <SlideLayer show={currentSlide === 6}><Slide05LowImpactArch /></SlideLayer>
         <SlideLayer show={currentSlide === 7}><Slide06LocalAI /></SlideLayer>
-        <SlideLayer show={currentSlide === 8}><Slide07SRE /></SlideLayer>
-        <SlideLayer show={currentSlide === 9}><Slide08Sintesis /></SlideLayer>
+        <SlideLayer show={currentSlide === 8}><Slide07SRE isActive={currentSlide === 8} /></SlideLayer>
+        <SlideLayer show={currentSlide === 9}><Slide08Sintesis isActive={currentSlide === 9} /></SlideLayer>
         <SlideLayer show={currentSlide === 10}><Slide09Horizonte /></SlideLayer>
-        <SlideLayer show={currentSlide === 11}><Slide10ThreeAMTest /></SlideLayer>
+        <SlideLayer show={currentSlide === 11}><Slide10ThreeAMTest isActive={currentSlide === 11} /></SlideLayer>
         <SlideLayer show={currentSlide === 12}><Slide11Cierre /></SlideLayer>
-        <SlideLayer show={currentSlide === 13}><Slide12Gracias /></SlideLayer>
+        <SlideLayer show={currentSlide === 13}><Slide12Gracias isActive={currentSlide === 13} /></SlideLayer>
       </div>
 
       <NavigationControls currentSlide={currentSlide} onPrev={prevSlide} onNext={nextSlide} />
