@@ -1,3 +1,5 @@
+import devsecopsGif from '../assets/DevSecOps.gif';
+
 export function DevSecOpsScanner() {
   return (
     <div className="relative overflow-hidden rounded-lg" style={{ background: '#080808' }}>
@@ -62,7 +64,7 @@ export function DevSecOpsScanner() {
 
       {/* The image */}
       <img
-        src="/assets/DevSecOps.gif"
+        src={devsecopsGif}
         alt="DevSecOps lifecycle"
         className="w-full block relative z-0"
         style={{ maxHeight: '340px', objectFit: 'contain' }}
