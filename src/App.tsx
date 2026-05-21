@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { useSlideNavigation } from './hooks/useSlideNavigation';
+import { useEffect } from 'react';
+import { useSlideSync } from './hooks/useSlideSync';
 import { StatusBar } from './components/StatusBar';
 import { NavigationControls } from './components/NavigationControls';
 import { Particles } from './components/Particles';
@@ -17,8 +17,6 @@ import { Slide09Horizonte } from './components/slides/Slide09Horizonte';
 import { Slide10ThreeAMTest } from './components/slides/Slide10ThreeAMTest';
 import { Slide11Cierre } from './components/slides/Slide11Cierre';
 import { Slide12Gracias } from './components/slides/Slide12Gracias';
-
-const BROADCAST_CHANNEL = 'jfp-presentation';
 
 function SlideLayer({ show, children }: { show: boolean; children: React.ReactNode }) {
   return (
@@ -41,76 +39,10 @@ interface AppProps {
 }
 
 export default function App({ kioskMode = false }: AppProps) {
-  const { currentSlide, goToSlide, nextSlide, prevSlide } = useSlideNavigation();
-  const channelRef = useRef<BroadcastChannel | null>(null);
-  const externalRef = useRef(false);
-  const slideRef = useRef(0);
-  slideRef.current = currentSlide; // always fresh for closures
-
-  /* ── BroadcastChannel synchronization ── */
-
-  useEffect(() => {
-    if (kioskMode) return; // kiosk iframe only listens, no broadcast setup needed
-
-    const channel = new BroadcastChannel(BROADCAST_CHANNEL);
-    channelRef.current = channel;
-
-    channel.onmessage = (event: MessageEvent) => {
-      const data = event.data;
-      if (!data) return;
-
-      if (data.type === 'SLIDE_CHANGE') {
-        externalRef.current = true;
-        goToSlide(data.slide);
-        return;
-      }
-
-      if (data.type === 'PONG') {
-        externalRef.current = true;
-        goToSlide(data.slide);
-        return;
-      }
-
-      if (data.type === 'PING') {
-        channel.postMessage({ type: 'PONG', slide: slideRef.current });
-        return;
-      }
-    };
-
-    return () => {
-      channel.close();
-      channelRef.current = null;
-    };
-    // We intentionally only run this on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kioskMode]);
-
-  // Broadcast local slide changes (unless triggered externally)
-  const prevSlideRef = useRef(currentSlide);
-  useEffect(() => {
-    if (kioskMode) return;
-    if (externalRef.current) {
-      externalRef.current = false;
-      prevSlideRef.current = currentSlide;
-      return;
-    }
-    if (prevSlideRef.current !== currentSlide) {
-      prevSlideRef.current = currentSlide;
-      channelRef.current?.postMessage({ type: 'SLIDE_CHANGE', slide: currentSlide });
-    }
-  }, [currentSlide, kioskMode]);
-
-  // Re-sync on mount: if another window is already running, match its slide
-  useEffect(() => {
-    if (kioskMode) return;
-
-    // Short delay to let the BroadcastChannel handler register first
-    const timer = setTimeout(() => {
-      channelRef.current?.postMessage({ type: 'PING' });
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [kioskMode]);
+  const { currentSlide, goToSlide, nextSlide, prevSlide } = useSlideSync({
+    enableKeyboard: !kioskMode,
+    listenOnly: kioskMode,
+  });
 
   // Expose current slide index globally (for OBS browser source, etc.)
   useEffect(() => {

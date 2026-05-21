@@ -1,68 +1,42 @@
 # ============================================================================
 # JPF — DevOps Experience Makefile
 # ============================================================================
-# make start           → Lanza la experiencia completa (construye, despliega, abre)
-# make stop            → Detiene el contenedor y cierra el navegador
-# make build           → Construye la imagen Docker
-# make clean           → Limpia todo (contenedores, imágenes)
-# make save            → Guarda la imagen como TAR versionado
-# make presenter       → Abre vista presentador + proyector (requiere servidor)
-# make presenter-start → Lanza servidor + ambas ventanas
-# make dev-presenter   → Modo desarrollo: Vite + ambas ventanas
+# make start         → Automatiza TODO: arranca Vite + abre kiosko + presentador
+# make stop          → Detiene Vite y cierra las ventanas de Firefox
+# make build         → Construye la imagen Docker
+# make clean         → Limpia contenedores e imágenes
+# make save          → Guarda la imagen como TAR versionado
 # ============================================================================
 
 PORT     ?= 8080
 VERSION  ?= v1.6
 TAR_FILE ?= docker-images/presentacion-jpf-$(VERSION).tar
 
-.PHONY: start stop build clean save help presenter presenter-start dev-presenter
+.PHONY: start stop build clean save help
 
-start: ## 🚀 Lanza la presentación con efectos visuales
-	@bash scripts/launch.sh $(PORT)
+start: ## 🚀 Automatiza TODO: Vite + kiosko (HDMI) + presentador (laptop)
+	@echo "  ▶ Iniciando Vite…"
+	@nohup npx vite --port $(PORT) > /tmp/vite-presenter.log 2>&1 &
+	@bash scripts/wait-for-server.sh $(PORT) "Vite"
+	@bash scripts/open-presenter.sh $(PORT)
+	@bash -c 'echo "  ▶ Vite activo (PID: $$(pgrep -f "vite.*$(PORT)" | head -1))"'
+	@echo "  ✅  Presentación lista."
 
-stop: ## ⏹  Detiene el contenedor y cierra el navegador
-	@echo "  ⏹  Deteniendo contenedor..."
+stop: ## ⏹  Detiene Vite y cierra ventanas Firefox
+	@echo "  ⏹  Cerrando ventanas y Vite…"
+	@bash -c 'for p in $$(ps aux | grep -E "firefox.*localhost:$(PORT)|vite.*$(PORT)" | grep -v grep | awk "{print \$$2}"); do kill $$p 2>/dev/null || true; done'
 	@docker compose down 2>/dev/null || true
-	@-pkill -f "firefox --kiosk" 2>/dev/null || true
-	@-pkill -f "chromium-browser --kiosk" 2>/dev/null || true
-	@-pkill -f "google-chrome --kiosk" 2>/dev/null || true
 	@echo "  ✅  Todo detenido."
 
 build: ## 🏗️  Construye la imagen Docker
 	docker compose build
 
-rebuild: clean build ## 🔄  Reconstruye desde cero (clean + build)
+rebuild: clean build ## 🔄  Reconstruye desde cero
 
-clean: ## 🗑️  Limpia contenedores, volúmenes e imágenes
+clean: ## 🗑️  Limpia contenedores e imágenes
 	docker compose down -v 2>/dev/null || true
 	-docker rmi presentacion-jpf-presentacion:latest 2>/dev/null || true
 	@echo "  ✅  Todo limpio."
-
-presenter: ## 🎬  Abre presentación proyector + vista presentador (requiere servidor)
-	@echo "  ▶ Abriendo ventanas…"
-	@xdg-open "http://localhost:$(PORT)" >/dev/null 2>&1 &
-	@sleep 0.5
-	@xdg-open "http://localhost:$(PORT)/?presenter" >/dev/null 2>&1 &
-	@echo ""
-	@echo "  ┌────────────────────────────────────────────────────────┐"
-	@echo "  │  🖥️  VENTANA 1 — PROYECTOR                             │"
-	@echo "  │     http://localhost:$(PORT)                             │"
-	@echo "  │     Arrastrala a la pantalla HDMI. F11 para fullscreen │"
-	@echo "  ├────────────────────────────────────────────────────────┤"
-	@echo "  │  💻 VENTANA 2 — LAPTOP (VISTA PRESENTADOR)             │"
-	@echo "  │     http://localhost:$(PORT)/?presenter                  │"
-	@echo "  │     Notas · cronómetro · preview · flechas ← →         │"
-	@echo "  └────────────────────────────────────────────────────────┘"
-	@echo ""
-
-presenter-start: ## 🚀  Lanza servidor + abre ambas ventanas
-	@bash scripts/presenter-launch.sh $(PORT)
-
-dev-presenter: ## 🔧  Modo desarrollo: Vite + ambas ventanas
-	@echo "  ▶ Iniciando Vite en background…"
-	@(npx vite --port $(PORT) &)
-	@sleep 2
-	@$(MAKE) presenter
 
 save: ## 💾  Guarda la imagen como TAR versionado
 	@mkdir -p docker-images

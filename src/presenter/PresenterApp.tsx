@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useBroadcastSync } from '../hooks/useBroadcastSync';
+import { useSlideSync } from '../hooks/useSlideSync';
 import { useElapsedTimer } from '../hooks/useElapsedTimer';
 import { TOTAL_SLIDES, SLIDE_STATUSES } from '../types';
 import { getSlideNote } from './slideNotes';
@@ -181,10 +181,54 @@ function NavControls({
   );
 }
 
+/* ── Launch projector button ── */
+
+function LaunchProjector() {
+  const [opened, setOpened] = useState(false);
+
+  // Leer coordenadas HDMI pasadas por el script de lanzamiento
+  const params = new URLSearchParams(window.location.search);
+  const hdmiX = parseInt(params.get('hdmiX') ?? '0', 10);
+  const hdmiY = parseInt(params.get('hdmiY') ?? '0', 10);
+  const hdmiW = parseInt(params.get('hdmiW') ?? '1366', 10);
+  const hdmiH = parseInt(params.get('hdmiH') ?? '768', 10);
+  const hasHdmi = params.has('hdmiX');
+
+  const handleOpen = () => {
+    if (opened) return;
+    const features = `left=${hdmiX},top=${hdmiY},width=${hdmiW},height=${hdmiH},menubar=no,toolbar=no,location=no,status=no`;
+    const kiosk = window.open('/', 'jpf-kiosk', features);
+    if (kiosk) {
+      setOpened(true);
+      // Intentar fullscreen después de que cargue
+      kiosk.addEventListener('load', () => {
+        try { kiosk.document.documentElement.requestFullscreen(); } catch { /* KDE/Firefox puede rechazar */ }
+      }, { once: true });
+    }
+  };
+
+  return (
+    <div className="launch-projector">
+      {!opened ? (
+        <button onClick={handleOpen} className="launch-btn">
+          ▶ ABRIR PROYECTOR
+        </button>
+      ) : (
+        <span className="launch-ok">
+          ● PROYECTOR ACTIVO
+          {hasHdmi && (
+            <span className="launch-hdmi"> en HDMI ({hdmiX},{hdmiY})</span>
+          )}
+        </span>
+      )}
+    </div>
+  );
+}
+
 /* ── Main presenter view ── */
 
 export function PresenterApp() {
-  const { currentSlide, nextSlide, prevSlide } = useBroadcastSync({
+  const { currentSlide, nextSlide, prevSlide } = useSlideSync({
     enableKeyboard: true,
     listenOnly: false,
   });
@@ -222,6 +266,8 @@ export function PresenterApp() {
         </div>
 
         <div className="topbar-right">
+          <LaunchProjector />
+          <span className="topbar-sep">|</span>
           <span className="topbar-timer">⏱ {elapsed}</span>
           <span className="topbar-sep">|</span>
           <span className="topbar-start">Inicio: {startTime}</span>
