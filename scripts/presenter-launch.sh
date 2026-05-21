@@ -134,15 +134,24 @@ main() {
     # ── FASE 3: Abrir ventanas ─────────────────────────────────────────────
     phase "3/4" "ABRIENDO VENTANAS"
 
-    # Detectar monitor HDMI para posicionar el kiosko
-    HDMI_NAME=""; PRIMARY_NAME=""; CAN_MOVE=false
+    # Detectar monitores con kscreen-doctor
+    HDMI_NAME=""; LAPTOP_NAME=""; CAN_MOVE=false
     HDMI_X=0; HDMI_Y=0; HDMI_W=1920; HDMI_H=1080
     HDMI_PARAMS=""
     if command -v kscreen-doctor &>/dev/null; then
-        local output_info hdmi_geom hdmi_xy hdmi_wh hdmi_x hdmi_y hdmi_w hdmi_h
+        local output_info hdmi_geom hdmi_xy hdmi_wh
         output_info=$(kscreen-doctor -o 2>/dev/null | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
+        # HDMI
         HDMI_NAME=$(echo "$output_info" | grep "HDMI" | head -1 | awk '{print $2}')
-        PRIMARY_NAME=$(echo "$output_info" | grep "priority 1" -B 2 | head -1 | awk '{print $2}')
+        [ -z "$HDMI_NAME" ] && HDMI_NAME=$(echo "$output_info" | grep -B 4 "^[[:space:]]*HDMI$" | head -1 | awk '{print $2}')
+        # Laptop (pantalla integrada)
+        LAPTOP_NAME=$(echo "$output_info" | grep "eDP" | head -1 | awk '{print $2}')
+        [ -z "$LAPTOP_NAME" ] && LAPTOP_NAME=$(echo "$output_info" | grep "Panel" -B 4 | head -1 | awk '{print $2}')
+        [ -z "$LAPTOP_NAME" ] && LAPTOP_NAME=$(echo "$output_info" | grep "LVDS" | head -1 | awk '{print $2}')
+        if [ -z "$LAPTOP_NAME" ] && [ -n "$HDMI_NAME" ]; then
+            LAPTOP_NAME=$(echo "$output_info" | grep "^Output:" | awk '{print $2}' | grep -v "^${HDMI_NAME}$" | head -1)
+        fi
+        # Geometría HDMI
         hdmi_geom=$(echo "$output_info" | grep "HDMI" -A 5 | grep "Geometry" | head -1)
         if [ -n "$hdmi_geom" ] && [ -n "$HDMI_NAME" ]; then
             hdmi_xy=$(echo "$hdmi_geom" | sed 's/.*Geometry:[[:space:]]*//' | awk '{print $1}' | sed 's/,/ /')
@@ -153,7 +162,10 @@ main() {
             HDMI_H=$(echo "$hdmi_wh" | awk -F'x' '{print $2}')
             HDMI_PARAMS="&hdmiX=${HDMI_X}&hdmiY=${HDMI_Y}&hdmiW=${HDMI_W}&hdmiH=${HDMI_H}"
             CAN_MOVE=true
-            phase_ok "${C_DIM}HDMI: ${HDMI_NAME} en (${HDMI_X},${HDMI_Y}) ${HDMI_W}x${HDMI_H}${C_RESET}"
+            phase_ok "${C_DIM}HDMI: output ${HDMI_NAME} en (${HDMI_X},${HDMI_Y}) ${HDMI_W}x${HDMI_H}${C_RESET}"
+        fi
+        if [ -n "$LAPTOP_NAME" ]; then
+            phase_ok "${C_DIM}Laptop: output ${LAPTOP_NAME}${C_RESET}"
         fi
     fi
 
@@ -174,18 +186,30 @@ user_pref("startup.homepage_welcome_url", "");
 user_pref("startup.homepage_welcome_url.additional", "");
 EOF
 
-    # ── Mostrar info de ventanas ──
+    # ── FASE A: Forzar laptop como primaria → abrir PRESENTADOR ──
+    # Firefox abre nuevas ventanas en el monitor PRIMARIO.
+    # Si HDMI es primario en este momento, el presentador se abriría
+    # en HDMI. Aseguramos que la laptop sea primaria primero.
+    if $CAN_MOVE && [ -n "$LAPTOP_NAME" ]; then
+        phase_ok "Priorizando laptop (output ${LAPTOP_NAME}) para el presentador…"
+        kscreen-doctor "output.${LAPTOP_NAME}.priority.1" >/dev/null 2>&1
+        sleep 1
+    fi
+
     echo -e "  ${C_CYAN}│${C_RESET}  ┌──────────────────────────────────────────────────┐"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_WHITE}VENTANA 1 — LAPTOP (VISTA PRESENTADOR)${C_RESET}         │"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_DIM}${url}/?presenter${HDMI_PARAMS}${C_RESET}  │"
     echo -e "  ${C_CYAN}│${C_RESET}  │  Notas · cronómetro · preview · navegación ← →   │"
     echo -e "  ${C_CYAN}│${C_RESET}  │  Perfil: default                                 │"
+    if $CAN_MOVE && [ -n "$LAPTOP_NAME" ]; then
+        echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_GREEN}✓ Posicionada en laptop (output ${LAPTOP_NAME})${C_RESET}    │"
+    fi
     echo -e "  ${C_CYAN}│${C_RESET}  ├──────────────────────────────────────────────────┤"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_WHITE}VENTANA 2 — PROYECTOR (KIOSKO)${C_RESET}                  │"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_DIM}${url}${C_RESET}                    │"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_GREEN}✓ Modo kiosko activo (perfil temporal)${C_RESET}         │"
-    if $CAN_MOVE; then
-        echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_GREEN}✓ Posicionada en ${HDMI_NAME}${C_RESET}                        │"
+    if $CAN_MOVE && [ -n "$HDMI_NAME" ]; then
+        echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_GREEN}✓ Posicionada en HDMI (output ${HDMI_NAME})${C_RESET}    │"
     fi
     echo -e "  ${C_CYAN}│${C_RESET}  ├──────────────────────────────────────────────────┤"
     echo -e "  ${C_CYAN}│${C_RESET}  │  ${C_GREEN}✓ Sincronización vía API REST${C_RESET}                     │"
@@ -194,7 +218,6 @@ EOF
     echo -e "  ${C_CYAN}│${C_RESET}"
 
     # ── Abrir ventana 1: PRESENTADOR (perfil default, laptop) ──
-    # Se abre PRIMERO para que Firefox inicie con el perfil default.
     case "$browser" in
         firefox|chromium-browser|google-chrome)
             ${browser} --new-window "${url}/?presenter${HDMI_PARAMS}" >/dev/null 2>&1 &
@@ -205,14 +228,13 @@ EOF
     esac
     sleep 3
 
-    # Posicionar kiosko en HDMI
+    # ── FASE B: Forzar HDMI como primario → abrir KIOSKO ──
     if $CAN_MOVE && [ -n "$HDMI_NAME" ]; then
+        phase_ok "Priorizando HDMI (output ${HDMI_NAME}) para el kiosko…"
         kscreen-doctor "output.${HDMI_NAME}.priority.1" >/dev/null 2>&1
         sleep 1
     fi
 
-    # ── Abrir ventana 2: KIOSKO (perfil temporal, HDMI) ──
-    # Perfil separado para evitar conflicto con Firefox ya corriendo.
     case "$browser" in
         firefox)           firefox --kiosk --profile "${kiosk_profile}" "${url}" >/dev/null 2>&1 & ;;
         chromium-browser)  chromium-browser --kiosk --user-data-dir="${kiosk_profile}" "${url}" >/dev/null 2>&1 & ;;
@@ -220,10 +242,10 @@ EOF
         *)                 xdg-open "${url}" >/dev/null 2>&1 & ;;
     esac
 
-    # Restaurar primario a la laptop
-    if $CAN_MOVE && [ -n "$PRIMARY_NAME" ]; then
+    # Restaurar laptop como primaria
+    if $CAN_MOVE && [ -n "$LAPTOP_NAME" ]; then
         sleep 2
-        kscreen-doctor "output.${PRIMARY_NAME}.priority.1" >/dev/null 2>&1
+        kscreen-doctor "output.${LAPTOP_NAME}.priority.1" >/dev/null 2>&1
     fi
     sleep 1
 
