@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSlideNavigation } from './hooks/useSlideNavigation';
 import { StatusBar } from './components/StatusBar';
 import { NavigationControls } from './components/NavigationControls';
@@ -18,6 +18,8 @@ import { Slide10ThreeAMTest } from './components/slides/Slide10ThreeAMTest';
 import { Slide11Cierre } from './components/slides/Slide11Cierre';
 import { Slide12Gracias } from './components/slides/Slide12Gracias';
 
+const BROADCAST_CHANNEL = 'jfp-presentation';
+
 function SlideLayer({ show, children }: { show: boolean; children: React.ReactNode }) {
   return (
     <div
@@ -33,10 +35,93 @@ function SlideLayer({ show, children }: { show: boolean; children: React.ReactNo
   );
 }
 
-export default function App() {
+interface AppProps {
+  /** If true, hides StatusBar, NavigationControls, and Particles — for iframe/embed use */
+  kioskMode?: boolean;
+}
+
+export default function App({ kioskMode = false }: AppProps) {
   const { currentSlide, goToSlide, nextSlide, prevSlide } = useSlideNavigation();
+  const channelRef = useRef<BroadcastChannel | null>(null);
+  const externalRef = useRef(false);
+  const slideRef = useRef(0);
+  slideRef.current = currentSlide; // always fresh for closures
+
+  /* ── BroadcastChannel synchronization ── */
 
   useEffect(() => {
+    if (kioskMode) return; // kiosk iframe only listens, no broadcast setup needed
+
+    const channel = new BroadcastChannel(BROADCAST_CHANNEL);
+    channelRef.current = channel;
+
+    channel.onmessage = (event: MessageEvent) => {
+      const data = event.data;
+      if (!data) return;
+
+      if (data.type === 'SLIDE_CHANGE') {
+        externalRef.current = true;
+        goToSlide(data.slide);
+        return;
+      }
+
+      if (data.type === 'PONG') {
+        externalRef.current = true;
+        goToSlide(data.slide);
+        return;
+      }
+
+      if (data.type === 'PING') {
+        channel.postMessage({ type: 'PONG', slide: slideRef.current });
+        return;
+      }
+    };
+
+    return () => {
+      channel.close();
+      channelRef.current = null;
+    };
+    // We intentionally only run this on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kioskMode]);
+
+  // Broadcast local slide changes (unless triggered externally)
+  const prevSlideRef = useRef(currentSlide);
+  useEffect(() => {
+    if (kioskMode) return;
+    if (externalRef.current) {
+      externalRef.current = false;
+      prevSlideRef.current = currentSlide;
+      return;
+    }
+    if (prevSlideRef.current !== currentSlide) {
+      prevSlideRef.current = currentSlide;
+      channelRef.current?.postMessage({ type: 'SLIDE_CHANGE', slide: currentSlide });
+    }
+  }, [currentSlide, kioskMode]);
+
+  // Re-sync on mount: if another window is already running, match its slide
+  useEffect(() => {
+    if (kioskMode) return;
+
+    // Short delay to let the BroadcastChannel handler register first
+    const timer = setTimeout(() => {
+      channelRef.current?.postMessage({ type: 'PING' });
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [kioskMode]);
+
+  // Expose current slide index globally (for OBS browser source, etc.)
+  useEffect(() => {
+    (window as unknown as Record<string, unknown>).__jpfSlide = currentSlide;
+  }, [currentSlide]);
+
+  /* ── Mouse hover effect for bento cards ── */
+
+  useEffect(() => {
+    if (kioskMode) return;
+
     const onMouseMove = (e: MouseEvent) => {
       document.querySelectorAll<HTMLElement>('.bento-card:hover').forEach(card => {
         const rect = card.getBoundingClientRect();
@@ -47,17 +132,26 @@ export default function App() {
     };
     window.addEventListener('mousemove', onMouseMove);
     return () => window.removeEventListener('mousemove', onMouseMove);
-  }, []);
+  }, [kioskMode]);
 
   return (
     <>
       <div className="grid-bg" />
       <div className="scanlines" />
-      <Particles />
+      {!kioskMode && <Particles />}
 
-      <StatusBar currentSlide={currentSlide} onNavClick={goToSlide} />
+      {!kioskMode && (
+        <StatusBar currentSlide={currentSlide} onNavClick={goToSlide} />
+      )}
 
-      <div className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen" style={{ top: '48px', bottom: '56px' }}>
+      <div
+        className="canvas-container fixed inset-0 z-1 overflow-hidden max-h-screen"
+        style={
+          kioskMode
+            ? { top: 0, bottom: 0 }
+            : { top: '48px', bottom: '56px' }
+        }
+      >
         <SlideLayer show={currentSlide === 0}><Slide00Intro /></SlideLayer>
         <SlideLayer show={currentSlide === 1}><Slide02IntroDevOps /></SlideLayer>
         <SlideLayer show={currentSlide === 2}><SlideDevOpsFull /></SlideLayer>
@@ -74,7 +168,9 @@ export default function App() {
         <SlideLayer show={currentSlide === 13}><Slide12Gracias isActive={currentSlide === 13} /></SlideLayer>
       </div>
 
-      <NavigationControls currentSlide={currentSlide} onPrev={prevSlide} onNext={nextSlide} />
+      {!kioskMode && (
+        <NavigationControls currentSlide={currentSlide} onPrev={prevSlide} onNext={nextSlide} />
+      )}
 
       <img
         src="/assets/logo-gidas.png"
