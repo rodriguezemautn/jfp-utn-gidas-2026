@@ -25,19 +25,15 @@ Buenas tardes a todos.
 
 *[Pausa corta. Dejar que el silencio genere atención.]*
 
-Mi nombre es (nombre del orador), y hoy vamos a hablar de algo que probablemente usan todos los días sin saberlo.
+Hoy vamos a hablar de algo que probablemente usan VIVEN los días sin saberlo.
 
 No voy a hablar de un framework. No voy a hablar de una herramienta de moda. Voy a hablar de la razón por la que (nombre una app o servicio local conocido: Mercado Pago, la app de un banco, SUBE) funciona a las 2 de la tarde del 29 de diciembre, cuando medio país está comprando al mismo tiempo.
 
-Voy a hablar de cómo se sostiene eso. Y de si ese "sostener" le está costando algo al planeta.
+**Voy a hablar de cómo se sostiene eso. Y de si ese "sostener" le está costando algo al planeta.**
 
 *[Señalar la pantalla brevemente.]*
 
-La charla se llama "Metodologías DevOps para el Desarrollo Sostenible de Sistemas Digitales". Son 20 minutos de contenido, y les prometo que al final van a tener al menos tres preguntas nuevas que hacerse sobre los sistemas que operan o que van a operar.
-
----
-
-### SLIDE 01 — DevOps y SRE: Fundamentos (01:30 – 03:30)
+La charla se llama **"Metodologías DevOps para el Desarrollo Sostenible de Sistemas Digitales"**. --- Cultura · GreenOps · Arquitecturas de Bajo Impacto · IA Local · SRE Evolucionado --- Son 20 minutos de contenido, y les prometo que al final van a tener al menos tres preguntas nuevas que hacerse sobre los sistemas que operan o que van a operar.
 
 *[Cambiar al tono más cercano, conversacional.]*
 
@@ -59,68 +55,41 @@ GMET: empatía hacia el usuario final que no fue representado. DevOps sostenible
 
 Son dos caras de la misma moneda.
 
+
+---
+
+### SLIDE 01 — DevOps y SRE: Fundamentos (01:30 – 03:30)
+
+## 1. ¿Qué es DevOps?
+DevOps no es un puesto de trabajo ni una herramienta, sino una **cultura y mentalidad colaborativa** que enfatiza la comunicación, integración y automatización entre los equipos de Desarrollo (Dev) y Operaciones (Ops). Su objetivo fundamental es **romper los silos de responsabilidad** para lograr una entrega de software más rápida, confiable y de alta calidad. Se basa en el principio de que "si tú lo escribes, tú lo corres" (*you build it, you run it*), eliminando el muro de confusión entre equipos.
+
+## 2. El Ciclo de Vida DevOps (Toolchain)
+El flujo de trabajo se visualiza como una **cadena de valor continua** que define cada paso del proceso de producción:
+*   **Plan/Code:** Los desarrolladores crean el código y lo gestionan en repositorios compartidos (Control de Versiones).
+*   **Build:** El código se descarga en un servidor de construcción y se compila de forma automática.
+*   **Test:** Se ejecutan pruebas unitarias e integradas automatizadas para validar la calidad.
+*   **Configure/Release:** Se gestiona la **Infraestructura como Código (IaC)** para aprovisionar entornos y desplegar el artefacto de forma predecible.
+*   **Monitor:** Se obtiene retroalimentación constante sobre la salud del sistema y la infraestructura para detectar errores proactivamente.
+
+## 3. SRE: Ingeniería de Confiabilidad de Sitios
+**SRE (Site Reliability Engineering)** es lo que sucede cuando se le pide a un ingeniero de software que diseñe y gestione un equipo de operaciones. Mientras que DevOps es el marco cultural, SRE es una **implementación técnica específica** que se enfoca en la estabilidad y la escalabilidad.
+
+### Métricas de Fiabilidad: SLI, SLO y SLA
+Para gestionar el riesgo de forma científica, SRE utiliza tres niveles de medición:
+*   **SLI (Service Level Indicator):** Es la métrica real y cuantitativa de *qué* nivel de servicio se está proporcionando en un momento dado (ej. latencia, tasa de errores o rendimiento).
+*   **SLO (Service Level Objective):** Es el **objetivo interno** o rango de valores deseados para un SLI (ej. "el 99.9% de las peticiones deben responder en menos de 100ms"). Define el umbral de éxito del equipo.
+*   **SLA (Service Level Agreement):** Es el **contrato legal** con el cliente final que incluye las consecuencias (generalmente financieras) de no cumplir con los SLOs. Suele ser un margen más amplio que el SLO interno para permitir maniobra operativa.
+
+**Nota para el disertante:** *Esta diapositiva sirve como el "ancla" de la charla. Al presentar el ciclo de vida, enfatiza que la automatización es el pegamento que une cada eslabón, y al explicar SRE, destaca que la fiabilidad es la característica más importante de cualquier producto.*
+
 ---
 
 ### SLIDE 02 — DevOps Full Screen
-
 *[Slide unicamente visual con devops.gif a pantalla completa. Sin texto del orador asignado — se utiliza como transición o apoyo visual durante el bloque de DevOps.]*
 
 ---
 
-### SLIDE 03 — El Costo Energético de la Computación (03:30 – 05:00)
-
-*[Tono más grave. Bajar la velocidad del habla.]*
-
-Déjenme plantear la escena.
-
-Durante décadas, diseñamos software como los ingenieros automotrices de los años 90: coches elegantes, con buenos materiales, que en las pruebas de laboratorio eran perfectos.
-
-*[PAUSA]*
-
-Y que fallaban estrepitosamente al chocar con la realidad.
-
-*[Subir levemente el volumen.]*
-
-Hoy, en 2026, el software no es un accesorio. Es el sistema nervioso de la sociedad. Salud. Transporte. Finanzas. Educación. Comunicación.
-
-Cuando ese sistema falla a las 3 AM del sábado, no falla una pantalla. Falla alguien que no puede transferir dinero para una emergencia. Falla alguien que no puede acceder a su historia clínica. Falla alguien que depende de ese servicio para trabajar.
-
-*[Pausa larga. 3 segundos.]*
-
-¿Qué hacemos ante eso?
-
-*[Señalar el recuadro verde en pantalla. Leer con convicción.]*
-
-No necesitamos héroes que no duermen. Necesitamos sistemas diseñados para sobrevivir.
-
-Eso es DevOps. Eso es lo que vamos a construir hoy.
-
-*[Breve pausa. Cambio de energía hacia adelante.]*
-
----
-
-### SLIDE 04 — El Paralelo del Crash Dummy (05:00 – 05:45)
-
-*[Tono más activo. Señalar los cinco bloques mientras los nombra.]*
-
-Cinco bloques, 20 minutos. Voy a moverme rápido, pero con profundidad donde importa.
-
-*[Esta slide retoma el puente con GMET y la idea del crash dummy como metáfora de diseño inclusivo — extendido ahora al ámbito de la sostenibilidad de sistemas.]*
-
-*[Pregunta rápida al público, tono casual.]*
-
-¿Alguien nunca escuchó ninguno de estos términos? *[Levantar la mano. Mirar. Asentir.]* ¿Alguien trabaja con al menos uno de ellos hoy? *[Levantar la mano. Mirar.]*
-
-Perfecto. Arrancamos.
-
----
-
-## PARTE II — CONTENIDO (05:00 – 25:00)
-
----
-
-### SLIDE 05 — Ciclo de Vida Sostenible / GreenOps (05:45 – 08:00)
-
+### SLIDE 04 — El Costo Energético de la Computación (03:30 – 05:00)
 *[Cambio a oscuro en pantalla. Tono más serio, datos duros.]*
 
 Quiero empezar con tres números.
@@ -151,7 +120,57 @@ No es solo ética. Es negocio.
 
 ---
 
-### SLIDE 06 — Arquitecturas de Bajo Impacto (08:00 – 10:30)
+### SLIDE 05 — El Paralelo del Crash Dummy (05:00 – 05:45)
+
+*[Tono más grave. Bajar la velocidad del habla.]*
+
+Déjenme plantear la escena.
+
+Durante décadas, diseñamos software como los ingenieros automotrices de los años 90: coches elegantes, con buenos materiales, que en las pruebas de laboratorio eran perfectos.
+
+*[PAUSA]*
+
+Y que fallaban estrepitosamente al chocar con la realidad.
+
+*[Subir levemente el volumen.]*
+
+Hoy, en 2026, el software no es un accesorio. Es el sistema nervioso de la sociedad. Salud. Transporte. Finanzas. Educación. Comunicación.
+
+Cuando ese sistema falla a las 3 AM del sábado, no falla una pantalla. Falla alguien que no puede transferir dinero para una emergencia. Falla alguien que no puede acceder a su historia clínica. Falla alguien que depende de ese servicio para trabajar.
+
+*[Pausa larga. 3 segundos.]*
+
+¿Qué hacemos ante eso?
+
+*[Señalar el recuadro verde en pantalla. Leer con convicción.]*
+
+No necesitamos héroes que no duermen. Necesitamos sistemas diseñados para sobrevivir.
+
+Eso es DevOps. Eso es lo que vamos a construir hoy.
+
+*[Breve pausa. Cambio de energía hacia adelante.]*
+ 
+ ---
+
+*[Tono más activo. Señalar los cinco bloques mientras los nombra.]*
+
+Cinco bloques, 20 minutos. Voy a moverme rápido, pero con profundidad donde importa.
+
+*[Esta slide retoma el puente con GMET y la idea del crash dummy como metáfora de diseño inclusivo — extendido ahora al ámbito de la sostenibilidad de sistemas.]*
+
+*[Pregunta rápida al público, tono casual.]*
+
+¿Alguien nunca escuchó ninguno de estos términos? *[Levantar la mano. Mirar. Asentir.]* ¿Alguien trabaja con al menos uno de ellos hoy? *[Levantar la mano. Mirar.]*
+
+Perfecto. Arrancamos.
+
+---
+
+## PARTE II — CONTENIDO (05:00 – 25:00)
+
+---
+
+### SLIDE 06 — Ciclo de Vida Sostenible / GreenOps (05:45 – 08:00)
 
 *[Tono más técnico, pero accesible.]*
 
@@ -190,9 +209,10 @@ La **Software Carbon Intensity**, o **SCI**, es el estándar internacional defin
 
 Esto se llama **"shift-left de sostenibilidad"**. Lo mismo que hicimos con la seguridad hace diez años, ahora lo hacemos con el carbono.
 
+
 ---
 
-### SLIDE 07 — IA Local & Automatización (10:30 – 13:00)
+### SLIDE 07 — Arquitecturas de Bajo Impacto (08:00 – 10:30)
 
 *[Tono más técnico. Mayor velocidad. Este bloque tiene mucho contenido.]*
 
@@ -230,7 +250,8 @@ La arquitectura no es solo performance. Es energía. Es dinero. Es planeta.
 
 ---
 
-### SLIDE 08 — SRE Evolucionado: SLOs de Sostenibilidad (13:00 – 15:30)
+### SLIDE 07 — IA Local & Automatización (10:30 – 13:00)
+
 
 *[Tono más cercano. Este bloque entusiasma.]*
 
@@ -264,7 +285,8 @@ La IA no reemplaza al ingeniero. La IA es el copiloto que propone y ejecuta acci
 
 ---
 
-### SLIDE 09 — Los Tres Pilares de la Sostenibilidad DevOps (15:30 – 18:00)
+### SLIDE 09 — SRE Evolucionado: SLOs de Sostenibilidad (13:00 – 15:30)
+
 
 *[Tono más académico pero sin perder energía. Señalar la tabla.]*
 
@@ -294,9 +316,10 @@ Lo que propone el SRE evolucionado para 2026 es simple: **cada SLO tiene ahora u
 
 Eso es una provocación técnica deliberada. Porque la mayoría de los dashboards que veo en producción miden uptime, latencia y error rate. Nadie mide el gasto energético por request. Nadie tiene una alerta que diga "hoy procesaste el mismo volumen pero consumiste un 40 por ciento más de energía que ayer". Esa alerta debería existir.
 
+
 ---
 
-### SLIDE 10 — La Era de las Plataformas Inteligentes (18:00 – 19:30)
+### SLIDE 10 — Los Tres Pilares de la Sostenibilidad DevOps (15:30 – 18:00)
 
 *[Tono de síntesis. Más tranquilo. Conectar todo.]*
 
@@ -324,7 +347,7 @@ La referencia académica que respalda esto es **Accelerate**, de Nicole Forsgren
 
 ---
 
-### SLIDE 11 — Experiencia en Vivo: El Test de las 3 AM (19:30 – 20:30)
+### SLIDE 11 — La Era de las Plataformas Inteligentes (18:00 – 19:30)
 
 *[Tono más entusiasta. Este es el futuro que ya está pasando.]*
 
@@ -346,7 +369,8 @@ Y los números que lo respaldan: **4 veces más deployments, 24 horas de lead ti
 
 ---
 
-### SLIDE 12 — Cierre & CTA (20:30 – 22:30)
+### SLIDE 12 — Experiencia en Vivo: El Test de las 3 AM (19:30 – 20:30)
+
 
 *[Bajar la voz. Cambio total de ritmo.]*
 
@@ -396,9 +420,10 @@ Y la diferencia técnica que hace posible el segundo camino es exactamente todo 
 
 > "En INFRAIT no apagamos incendios. Diseñamos sistemas que no se incendian."
 
+
 ---
 
-### SLIDE 13 — Recursos, Contacto y Agradecimientos (22:30 – 25:00)
+### SLIDE 13 — Cierre & CTA (20:30 – 22:30)
 
 *[Tono más personal. Cerrar el círculo.]*
 
@@ -426,7 +451,7 @@ Se van con tres cosas hoy:
 
 > *[Para estudiantes:]* Si quieren trabajar en serio con esto, el Laboratorio INFRAIT es el lugar. Proyectos reales, problemas reales, con el nivel técnico de la industria. La puerta está abierta.
 >
-> *[Para graduados que ya trabajan:]* Les dejo un desafío concreto: ¿cuánto carbono emite su sistema hoy? Si no lo saben, esa es su próxima tarea. Calculen el SCI de un endpoint crítico. Es más simple de lo que parece, y les va a cambiar cómo piensan el sistema.
+> *[Para graduados que ya trabajan:]* Les dejo un desafío concreto: ¿cuánto carbono emite su sistema hoy? Si no lo saben, esa es su próxima tarea. Calculen el SCI de un endpoint crítico. Es más simple de lo que parece, y les va a cambiar cómo piensan el sistema. Hay buenas herramientas como el **proyecto KEPLER de CNCF con grafana y prometheus**
 >
 > *[Para docentes:]* Si quieren incorporar estos contenidos a sus materias, hablemos. Tenemos casos de uso, material y ganas de colaborar.
 
@@ -439,6 +464,7 @@ Las fuentes están en la última diapositiva: Accelerate, el DevOps Handbook, el
 Muchas gracias.
 
 *[Pausa. No agregar nada más. Dejar que el silencio sea el punto final.]*
+
 
 ---
 
