@@ -14,13 +14,8 @@ TAR_FILE ?= docker-images/presentacion-jpf-$(VERSION).tar
 
 .PHONY: start stop build clean save help
 
-start: ## 🚀 Automatiza TODO: Vite + kiosko (HDMI) + presentador (laptop)
-	@echo "  ▶ Iniciando Vite…"
-	@nohup npx vite --port $(PORT) > /tmp/vite-presenter.log 2>&1 &
-	@bash scripts/wait-for-server.sh $(PORT) "Vite"
-	@bash scripts/open-presenter.sh $(PORT)
-	@bash -c 'echo "  ▶ Vite activo (PID: $$(pgrep -f "vite.*$(PORT)" | head -1))"'
-	@echo "  ✅  Presentación lista."
+start: ## 🚀  DevOps Experience: presenta la experiencia completa
+	@bash scripts/launch-experience.sh $(PORT)
 
 stop: ## ⏹  Detiene Vite y cierra ventanas Firefox
 	@echo "  ⏹  Cerrando ventanas y Vite…"

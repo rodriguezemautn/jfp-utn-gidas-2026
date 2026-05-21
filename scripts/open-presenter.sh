@@ -116,16 +116,16 @@ EOF
 PRESENTER_URL="${URL}/?presenter${HDMI_PARAMS}"
 
 if $CAN_MOVE && [ -n "$LAPTOP_NAME" ]; then
-    echo "  ${C_DIM}  → Llevando laptop (output ${LAPTOP_NAME}) a primario${C_RESET}"
+    echo -e "  ${C_DIM}  → Llevando laptop (output ${LAPTOP_NAME}) a primario${C_RESET}"
     kscreen-doctor "output.${LAPTOP_NAME}.priority.1" >/dev/null 2>&1
     sleep 1
 fi
 
 if [ -n "$BROWSER" ]; then
-    echo "  ${C_GREEN}●${C_RESET} Abriendo vista del presentador (laptop)…"
+    echo -e "  ${C_GREEN}●${C_RESET} Abriendo vista del presentador (laptop)…"
     ${BROWSER} --new-window "${PRESENTER_URL}" >/dev/null 2>&1 &
 else
-    echo "  ${C_YELLOW}▲${C_RESET} Usando xdg-open para el presentador…"
+    echo -e "  ${C_YELLOW}▲${C_RESET} Usando xdg-open para el presentador…"
     xdg-open "${PRESENTER_URL}" >/dev/null 2>&1 &
 fi
 sleep 2
@@ -139,13 +139,13 @@ sleep 2
 
 if [ -n "$BROWSER_KIOSK" ]; then
     if $CAN_MOVE && [ -n "$HDMI_NAME" ]; then
-        echo "  ${C_DIM}  → Llevando HDMI (output ${HDMI_NAME}) a primario${C_RESET}"
-        echo "  ${C_DIM}  HDMI: ${HDMI_NAME} en (${HDMI_X},${HDMI_Y}) ${HDMI_W}x${HDMI_H}${C_RESET}"
+        echo -e "  ${C_DIM}  → Llevando HDMI (output ${HDMI_NAME}) a primario${C_RESET}"
+        echo -e "  ${C_DIM}  HDMI: ${HDMI_NAME} en (${HDMI_X},${HDMI_Y}) ${HDMI_W}x${HDMI_H}${C_RESET}"
         kscreen-doctor "output.${HDMI_NAME}.priority.1" >/dev/null 2>&1
         sleep 1
     fi
 
-    echo "  ${C_GREEN}●${C_RESET} Abriendo proyector en modo kiosko (HDMI)…"
+    echo -e "  ${C_GREEN}●${C_RESET} Abriendo proyector en modo kiosko (HDMI)…"
     ${BROWSER_KIOSK} --profile "${KIOSK_PROFILE}" "${URL}" >/dev/null 2>&1 &
 
     # Restaurar laptop como primaria
@@ -154,31 +154,31 @@ if [ -n "$BROWSER_KIOSK" ]; then
         kscreen-doctor "output.${LAPTOP_NAME}.priority.1" >/dev/null 2>&1
     fi
 else
-    echo "  ${C_YELLOW}▲${C_RESET} Sin navegador con kiosk — usando xdg-open${C_RESET}"
+    echo -e "  ${C_YELLOW}▲${C_RESET} Sin navegador con kiosk — usando xdg-open${C_RESET}"
     xdg-open "${URL}" >/dev/null 2>&1 &
 fi
 
 # ── Resumen ─────────────────────────────────────────────────────────────
 echo ""
 echo "  ┌────────────────────────────────────────────────────────┐"
-echo "  │  ${C_WHITE}VENTANA 1 — LAPTOP (VISTA PRESENTADOR)${C_RESET}            │"
-echo "  │     ${C_DIM}${PRESENTER_URL}${C_RESET}  │"
+echo -e "  │  ${C_WHITE}VENTANA 1 — LAPTOP (VISTA PRESENTADOR)${C_RESET}            │"
+echo -e "  │     ${C_DIM}${PRESENTER_URL}${C_RESET}  │"
 echo "  │     Notas · cronómetro · preview · navegación ← →   │"
 echo "  │     Perfil: default                                 │"
 if $CAN_MOVE && [ -n "$LAPTOP_NAME" ]; then
-    echo "  │     ${C_GREEN}✓ Posicionada en laptop (output ${LAPTOP_NAME})${C_RESET}    │"
+    echo -e "  │     ${C_GREEN}✓ Posicionada en laptop (output ${LAPTOP_NAME})${C_RESET}    │"
 fi
 echo "  ├────────────────────────────────────────────────────────┤"
-echo "  │  ${C_WHITE}VENTANA 2 — PROYECTOR (KIOSKO)${C_RESET}                    │"
-echo "  │     ${C_DIM}${URL}${C_RESET}                    │"
-echo "  │     ${C_GREEN}✓ Modo kiosko activo (perfil temporal)${C_RESET}        │"
+echo -e "  │  ${C_WHITE}VENTANA 2 — PROYECTOR (KIOSKO)${C_RESET}                    │"
+echo -e "  │     ${C_DIM}${URL}${C_RESET}                    │"
+echo -e "  │     ${C_GREEN}✓ Modo kiosko activo (perfil temporal)${C_RESET}        │"
 if $CAN_MOVE && [ -n "$HDMI_NAME" ]; then
-    echo "  │     ${C_GREEN}✓ Posicionada en HDMI (output ${HDMI_NAME})${C_RESET}       │"
+    echo -e "  │     ${C_GREEN}✓ Posicionada en HDMI (output ${HDMI_NAME})${C_RESET}       │"
 fi
 echo "  ├────────────────────────────────────────────────────────┤"
-echo "  │  ${C_GREEN}✓ Sincronización vía API REST${C_RESET}                     │"
+echo -e "  │  ${C_GREEN}✓ Sincronización vía API REST${C_RESET}                     │"
 echo "  │     Funciona entre perfiles separados                 │"
 echo "  └────────────────────────────────────────────────────────┘"
 echo ""
-echo "  ${C_DIM}Para salir: cerrá las ventanas manualmente${C_RESET}"
+echo -e "  ${C_DIM}Para salir: cerrá las ventanas manualmente${C_RESET}"
 echo ""
