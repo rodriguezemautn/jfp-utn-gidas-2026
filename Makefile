@@ -17,11 +17,8 @@ TAR_FILE ?= docker-images/presentacion-jpf-$(VERSION).tar
 start: ## 🚀  DevOps Experience: presenta la experiencia completa
 	@bash scripts/launch-experience.sh $(PORT)
 
-stop: ## ⏹  Detiene Vite y cierra ventanas Firefox
-	@echo "  ⏹  Cerrando ventanas y Vite…"
-	@bash -c 'for p in $$(ps aux | grep -E "firefox.*localhost:$(PORT)|vite.*$(PORT)" | grep -v grep | awk "{print \$$2}"); do kill $$p 2>/dev/null || true; done'
-	@docker compose down 2>/dev/null || true
-	@echo "  ✅  Todo detenido."
+stop: ## ⏹  Shutdown experience: cierra todo con estilo
+	@bash scripts/stop-experience.sh $(PORT)
 
 build: ## 🏗️  Construye la imagen Docker
 	docker compose build

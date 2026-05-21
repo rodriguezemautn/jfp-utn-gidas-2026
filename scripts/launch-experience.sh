@@ -14,11 +14,10 @@ C_ITAL='\033[3m'
 C_RESET='\033[0m'
 
 # Palette
-C_BG='\033[48;5;232m'       # background #0a0a0a
 C_FG='\033[38;5;252m'       # foreground light gray
-C_GREEN='\033[38;5;46m'     # primary green
-C_GREEN_DIM='\033[38;5;22m' # dim green
-C_GREEN_BG='\033[48;5;22m'  # background green
+C_GREEN='\033[38;5;46m'     # primary green  #00FF41
+C_GREEN_DIM='\033[38;5;28m' # dim green  #008700
+C_GREEN_DARK='\033[38;5;22m' # dark green (shadows)
 C_CYAN='\033[38;5;87m'      # cyan accents
 C_YELLOW='\033[38;5;226m'   # warnings
 C_RED='\033[38;5;196m'      # errors
@@ -36,12 +35,6 @@ VITE_LOG="/tmp/vite-presenter.log"
 
 # ─── Helpers ────────────────────────────────────────────────────────────────
 
-# Dibujar línea horizontal completa (80 cols)
-hr() {
-    local ch="${1:-─}"
-    printf "  ${C_GRAY_DIM}%*s${C_RESET}\n" 76 | tr ' ' "$ch"
-}
-
 # Escribir texto con efecto máquina de escribir
 # Respeta secuencias ANSI completas (no las parte carácter por carácter)
 typewrite() {
@@ -51,7 +44,6 @@ typewrite() {
     local len=${#text}
     while [ "$i" -lt "$len" ]; do
         c="${text:$i:1}"
-        # Si arranca un escape ANSI, extraerlo completo
         if [ "$c" = $'\033' ]; then
             local seq="$c"
             i=$((i+1))
@@ -59,7 +51,6 @@ typewrite() {
                 c="${text:$i:1}"
                 seq="$seq$c"
                 i=$((i+1))
-                # Las secuencias ANSI de color terminan en 'm'
                 [ "$c" = 'm' ] && break
             done
             printf "%s" "$seq"
@@ -77,7 +68,7 @@ phase_title() {
     local num="$1" title="$2" icon="${3:-►}"
     echo
     echo -e "  ${C_GRAY_DIM}╭──────────────────────────────────────────────────────────────╮${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_DIM}[${C_RESET}${C_CYAN}${num}${C_RESET}${C_DIM}]${C_RESET}  ${C_WHITE}${icon}  ${title}${C_RESET}  ${C_DIM}${C_GRAY_DIM}${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_DIM}[${C_RESET}${C_CYAN}${num}${C_RESET}${C_DIM}]${C_RESET}  ${C_WHITE}${icon}  ${title}${C_RESET}"
     echo -e "  ${C_GRAY_DIM}├──────────────────────────────────────────────────────────────┤${C_RESET}"
 }
 
@@ -85,6 +76,7 @@ phase_title() {
 status_ok()  { echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}●${C_RESET}  $*"; }
 status_warn(){ echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_YELLOW}▲${C_RESET}  $*"; }
 status_info(){ echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_DIM}‧${C_RESET}  ${C_GRAY}$*${C_RESET}"; }
+status_data(){ echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_CYAN}▸${C_RESET}  $*"; }
 status_dim() { echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GRAY_DIM}  $*${C_RESET}"; }
 
 # Cierre de fase
@@ -98,40 +90,24 @@ show_banner_gidas() {
     echo
     echo -e "  ${C_GRAY_DIM}┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓${C_RESET}"
     echo -e "  ${C_GRAY_DIM}┃${C_RESET}                                                               ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}████${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_RESET}██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}       ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_RESET}██  ${C_GREEN}██${C_RESET}         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ███${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_RESET}████  ${C_GREEN}████${C_RESET}██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}   ██  ${C_GREEN}██${C_RESET}         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN_DIM}██████${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}   ██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' '  _____ _ _____           _____')${C_RESET}                    ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' ' / ____(_)  __ \   /\    / ____|')${C_RESET}                   ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' '| |  __ _| |  | | /  \  | (___  ')$(printf ' ')${C_RESET}                   ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' '| | |_ | | |  | |/ /\ \  \___ \ ')${C_RESET}                   ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' '| |__| | | |__| / ____ \ ____) |')${C_RESET}                   ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}               ${C_GREEN}$(printf '%s' ' \_____|_|_____/_/    \_\_____/ ')${C_RESET}                   ${C_GRAY_DIM}┃${C_RESET}"
     echo -e "  ${C_GRAY_DIM}┃${C_RESET}                                                               ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN_DIM}███${C_RESET}    ${C_GREEN_DIM}████████${C_RESET}  ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_RESET}      ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM} ██${C_RESET}     ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}  ██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}   ${C_GREEN}██${C_RESET}     ${C_GREEN_DIM}██████${C_RESET}                          ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' ' _____ _   _ ______ _____            _ _______ ')${C_RESET}      ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' '|_   _| \ | |  ____|  __ \     /\   (_)__   __|')${C_RESET}     ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' '  | | |  \| | |__  | |__) |   /  \   _   | |   ')$(printf ' ')${C_RESET}     ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' '  | | | . ` |  __| |  _  /   / /\ \ | |  | |   ')$(printf ' ')${C_RESET}     ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' ' _| |_| |\  | |    | | \ \  / ____ \| |  | |   ')$(printf ' ')${C_RESET}     ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}              ${C_GREEN}$(printf '%s' '|_____|_| \_|_|    |_|  \_\/_/    \_\_|  |_|   ')$(printf ' ')${C_RESET}     ${C_GRAY_DIM}┃${C_RESET}"
     echo -e "  ${C_GRAY_DIM}┃${C_RESET}                                                               ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}         ${C_WHITE}DevOps Sostenible — JFP 2026${C_RESET}                    ${C_GRAY_DIM}┃${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}┃${C_RESET}   ${C_DIM}UTN FRLP · Grupo de Investigación GiDAS · INFRA IT${C_RESET}    ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}             ${C_WHITE}DevOps Sostenible — JFP 2026${C_RESET}                    ${C_GRAY_DIM}┃${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}┃${C_RESET}       ${C_DIM}UTN FRLP · Grupo de Investigación GiDAS · INFRA IT${C_RESET}      ${C_GRAY_DIM}┃${C_RESET}"
     echo -e "  ${C_GRAY_DIM}┃${C_RESET}                                                               ${C_GRAY_DIM}┃${C_RESET}"
     echo -e "  ${C_GRAY_DIM}┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛${C_RESET}"
-    echo
-}
-
-show_banner_compact() {
-    echo
-    echo -e "  ${C_GRAY_DIM}┌──────────────────────────────────────────────────────────────┐${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}████${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_RESET}██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}       ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_RESET}██  ${C_GREEN}██${C_RESET}         ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ███${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_RESET}████  ${C_GREEN}████${C_RESET}██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}   ██  ${C_GREEN}██${C_RESET}         ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN_DIM}██████${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}██${C_RESET}   ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_RESET}   ██  ${C_GREEN_DIM}███████${C_RESET}    ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN_DIM}███${C_RESET}    ${C_GREEN_DIM}████████${C_RESET}  ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}  ${C_DIM}INFRA IT${C_RESET}     ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_RESET}      ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM} ██${C_RESET}     ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}  ██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}                         ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}██${C_GREEN_DIM}   ██${C_RESET}   ${C_GREEN}██${C_RESET}     ${C_GREEN_DIM}██████${C_RESET}                          ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}│${C_RESET}       ${C_DIM}UTN FRLP · Grupo GiDAS · INFRA IT${C_RESET}            ${C_GRAY_DIM}│${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}└──────────────────────────────────────────────────────────────┘${C_RESET}"
     echo
 }
 
@@ -177,7 +153,7 @@ phase_system_check() {
         fi
     fi
 
-    # Node / npm
+    # Node
     if command -v node &>/dev/null; then
         status_ok "Node.js ${C_GREEN}$(node --version)${C_RESET}"
     else
@@ -185,21 +161,21 @@ phase_system_check() {
         errors=$((errors+1))
     fi
 
-    # kscreen-doctor for monitor detection
+    # kscreen-doctor
     if command -v kscreen-doctor &>/dev/null; then
         status_ok "kscreen-doctor available ${C_DIM}(HDMI positioning)${C_RESET}"
     else
-        status_info "kscreen-doctor not found — windows will open on primary monitor"
+        status_info "kscreen-doctor not found — windows open on primary monitor"
     fi
 
-    # Network (localhost)
+    # Network
     if ping -c 1 -W 1 localhost &>/dev/null 2>&1; then
         status_ok "Network stack ready"
     else
         status_warn "localhost unreachable — check /etc/hosts"
     fi
 
-    # Cleanup old processes
+    # Cleanup stale processes
     local old_count
     old_count=$(ps aux | grep -cE "firefox.*localhost:${PORT}|vite.*${PORT}" 2>/dev/null || true)
     if [ "$old_count" -gt 0 ]; then
@@ -215,9 +191,10 @@ phase_system_check() {
 
     # Clean temp profiles
     rm -rf "/tmp/jpf-kiosk-profile-${PORT}"
+
     status_dim "  ───────────────────────────────────────────"
     if [ "$errors" -eq 0 ]; then
-        status_ok "${C_GREEN}System ready — proceeding to launch${C_RESET}"
+        status_ok "${C_GREEN}All systems nominal — proceeding to launch${C_RESET}"
     else
         status_warn "${C_YELLOW}${errors} warning(s) — may still work${C_RESET}"
     fi
@@ -230,12 +207,10 @@ phase_server_startup() {
 
     status_info "Booting Vite dev server..."
 
-    # Start Vite in background
     cd "$PROJECT_DIR"
     nohup npx vite --port "$PORT" > "$VITE_LOG" 2>&1 &
     local vite_pid=$!
 
-    # Visual wait with dots animation
     local timeout=30 elapsed=0
     while true; do
         if curl -sf "http://localhost:${PORT}" >/dev/null 2>&1; then
@@ -247,7 +222,6 @@ phase_server_startup() {
             tail -20 "$VITE_LOG" | sed 's/^/  /'
             exit 1
         fi
-        # Animated dots
         local dots
         dots=$(printf "%*s" $(( (elapsed % 20) + 1 )) | tr ' ' '.')
         printf "\r  ${C_YELLOW}⠿${C_RESET}  ${C_DIM}Waiting for Vite%s${C_RESET}" "$dots"
@@ -255,26 +229,24 @@ phase_server_startup() {
         elapsed=$((elapsed + 1))
     done
 
-    # Show Vite info from log
     local vite_info
     vite_info=$(grep -m1 "Local:" "$VITE_LOG" 2>/dev/null || echo "http://localhost:${PORT}")
     status_ok "Dev server:  ${C_GREEN}${vite_info}${C_RESET}"
     status_dim "  ───────────────────────────────────────────"
-    status_ok "${C_GREEN}Engine ready — deploying windows${C_RESET}"
+    status_ok "${C_GREEN}Engine online — deploying windows${C_RESET}"
     phase_close
 }
 
-# ─── FASE 3: Monitor Detection ──────────────────────────────────────────────
-phase_monitor_detection() {
+# ─── FASE 3: Window Deployment ──────────────────────────────────────────────
+phase_deploy_windows() {
     phase_title "3/4" "DEPLOYING PRESENTATION WINDOWS" "🖥"
 
-    # Run the window opener
     bash "$SCRIPT_DIR/open-presenter.sh" "$PORT"
 
     phase_close
 }
 
-# ─── FASE 4: Final Dashboard ────────────────────────────────────────────────
+# ─── FASE 4: Dashboard ──────────────────────────────────────────────────────
 phase_dashboard() {
     local vite_pid
     vite_pid=$(pgrep -f "vite.*${PORT}" | head -1 2>/dev/null || echo "N/A")
@@ -283,8 +255,8 @@ phase_dashboard() {
     echo -e "  ${C_GRAY_DIM}╔═══════════════════════════════════════════════════════════════╗${C_RESET}"
     echo -e "  ${C_GRAY_DIM}║${C_RESET}  ${C_WHITE}${C_BOLD}              ✓  CONNECTION ESTABLISHED  ✓${C_RESET}              ${C_GRAY_DIM}║${C_RESET}"
     echo -e "  ${C_GRAY_DIM}║${C_RESET}                                                       ${C_GRAY_DIM}║${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}║${C_RESET}    ${C_GREEN}██${C_GREEN_DIM}████${C_RESET}  ${C_GREEN}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_GREEN_DIM}██${C_RESET}  ${C_GREEN}████${C_RESET}██  ${C_GREEN_DIM}███████${C_RESET}  ${C_DIM}●${C_RESET}  ${C_CYAN}JFP 2026${C_RESET}   ${C_GRAY_DIM}║${C_RESET}"
-    echo -e "  ${C_GRAY_DIM}║${C_RESET}    ${C_GREEN}██${C_RESET}  ${C_GREEN_DIM}███${C_RESET}    ${C_GREEN_DIM}████████${C_RESET}  ${C_GREEN}██${C_RESET}    ${C_GREEN}██${C_RESET}  ${C_DIM}INFRA IT${C_RESET}   ${C_CYAN}●${C_RESET}  ${C_DIM}FRLP${C_RESET}    ${C_GRAY_DIM}║${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}║${C_RESET}    ${C_GREEN}${C_BOLD}GiDAS${C_RESET}  ${C_GREEN_DIM}·${C_RESET}  ${C_GREEN}${C_BOLD}INFRA IT${C_RESET}      ${C_CYAN}Grupo de Investigación${C_RESET}         ${C_GRAY_DIM}║${C_RESET}"
+    echo -e "  ${C_GRAY_DIM}║${C_RESET}    ${C_DIM}UTN FRLP — JFP 2026${C_RESET}               ${C_CYAN}DevOps Sostenible${C_RESET}      ${C_GRAY_DIM}║${C_RESET}"
     echo -e "  ${C_GRAY_DIM}║${C_RESET}                                                       ${C_GRAY_DIM}║${C_RESET}"
     echo -e "  ${C_GRAY_DIM}╠═══════════════════════════════════════════════════════════════╣${C_RESET}"
     echo -e "  ${C_GRAY_DIM}║${C_RESET}                                                       ${C_GRAY_DIM}║${C_RESET}"
@@ -296,7 +268,6 @@ phase_dashboard() {
         echo -e "  ${C_GRAY_DIM}║${C_RESET}    ${C_GREEN}●${C_RESET}  Vite PID       ${C_GRAY}${vite_pid}${C_RESET}                                ${C_GRAY_DIM}║${C_RESET}"
     fi
 
-    # Detect HDMI info if available
     if command -v kscreen-doctor &>/dev/null; then
         local output_info hdmi_name laptop_name
         output_info=$(kscreen-doctor -o 2>/dev/null | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g')
@@ -335,7 +306,7 @@ main() {
     phase_banner
     phase_system_check
     phase_server_startup
-    phase_monitor_detection
+    phase_deploy_windows
     phase_dashboard
 }
 

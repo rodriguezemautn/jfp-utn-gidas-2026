@@ -127,7 +127,7 @@ export function GiDASReveal({ isActive }: GiDASRevealProps) {
           transition: 'opacity 0.8s ease-in-out',
         }}
       >
-        GIROS LAB
+        GiDAS - INFRAiT
       </div>
     </div>
   );
